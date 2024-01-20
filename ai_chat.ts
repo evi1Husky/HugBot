@@ -1,4 +1,4 @@
-import { Zephyr, Hermes } from "../src/chatBots.ts"
+import { Zephyr, Hermes } from "./src/chatBots"
 
 async function main(): Promise<void> {
   console.clear();
