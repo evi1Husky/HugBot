@@ -2,7 +2,7 @@
 
 Chatbot agent for HuggingFace Inference API text generation models.
 
-## features
+## Features
 
 - Free, works without api key.
 - Adjustable chat bot conversation memory.
@@ -15,10 +15,16 @@ Chatbot agent for HuggingFace Inference API text generation models.
 - Zephyr: HuggingFaceH4 zephyr-7b-beta
 - Hermes: NousResearch Nous-Hermes-2-Mixtral-8x7B-DPO
 
+## Install
+
+```sh
+npm i hugbot
+```
+
 ## Usage
 
 ```typescript
-import { Zephyr } from "chatBots";
+import { Zephyr } from "hugbot";
 
 const zephyr = new Zephyr();
 const response = await zephyr.respondTo("Hi!");
