@@ -4,8 +4,8 @@ Chatbot agent for HuggingFace 🤗 Inference API text generation models.
 
 ## Features
 
-- ✨ Free, works without api key.
-- 💬 Adjustable chat bot conversation memory.
+- ✨ Free, no API key required.
+- 💬 Chat bot conversation memory.
 - 🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
 - 🤖 Preconfigured model subclasses.
 - 🧩 Proper LLM prompt templating using tags and examples provided in model docs and tokenizer configs.
