@@ -65,6 +65,10 @@ export abstract class HugBot implements IHugBot {
    * @constructor
    * @param string apiToken - API token for authentication with
    * HuggingFace Inference API. Optional.
+   * @example
+   * // Create a new chat bot instance and generate a response
+   * const bot = new Zephyr();
+   * const response = await bot.respondTo('Hi!');
    */
   constructor(apiToken?: string) {
     this.apiToken = apiToken;

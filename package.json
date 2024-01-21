@@ -8,10 +8,16 @@
   "keywords": [
     "LLM",
     "chatbot",
-    "bot"
+    "bot",
+    "HuggingFace",
+    "ai"
   ],
   "author": "evi1husky",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evi1Husky/HugBot"
+  },
   "exports": {
     ".": "./dist/chatBots.js"
   },
