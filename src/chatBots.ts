@@ -1,5 +1,5 @@
 import { HugBot } from "./HugBot";
-import { IHugBot } from "../typings";
+import { IHugBot } from "./typings";
 
 /**
  * Chat bot using HuggingFace Inference API Zephyr-7b-beta model.

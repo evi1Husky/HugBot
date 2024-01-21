@@ -1,5 +1,5 @@
 import { popLeft } from "./ContextManager";
-import { IHugBot, Response } from "../typings";
+import { IHugBot, Response } from "./typings";
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
