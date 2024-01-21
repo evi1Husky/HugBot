@@ -1,15 +1,15 @@
-# 🤖 HugBot 🤖
+# HugBot 🤖
 
 Chatbot agent for HuggingFace 🤗 Inference API text generation models.
 
 ## Features
 
-✨ Free, works without api key.
-💬 Adjustable chat bot conversation memory.
-🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
-🤖 Preconfigured model subclasses.
-🧩 Proper LLM prompt templating using tags and examples provided in model docs and tokenizer configs.
-⭐️ Works in browsers, Deno and Bun.
+- ✨ Free, works without api key.
+- 💬 Adjustable chat bot conversation memory.
+- 🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
+- 🤖 Preconfigured model subclasses.
+- 🧩 Proper LLM prompt templating using tags and examples provided in model docs and tokenizer configs.
+- ⭐️ Works in browsers, Deno and Bun.
 
 ## Preconfigured Model Subclasses
 
