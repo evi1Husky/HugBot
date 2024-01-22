@@ -1,6 +1,6 @@
 {
   "name": "hugbot",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Chatbot agent for HuggingFace Inference API text generation models.",
   "main": "dist/chatBots.js",
   "types": "dist/typings.d.ts",

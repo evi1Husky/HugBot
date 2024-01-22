@@ -1,8 +1,9 @@
 export interface IHugBot {
   languageModel: string;
+  name: string;
   systemPrompt: string;
-  contextWindow: number;
   responseDirective: string;
+  tokenCounter: ITokenCounter | undefined;
   params: {
     top_k: number | undefined;
     top_p: number | undefined;
@@ -29,3 +30,13 @@ export interface IHugBot {
 }
 
 export type Response = [{ generated_text: string }];
+
+export interface ITokenCounter {
+  LLMType: string;
+  contextWindow: number;
+  contextOverflow: boolean;
+  resetTokenCount: () => void;
+  popLeft: () => void;
+  addTokens: (text: string, role?: "bot" | "user") => void;
+  countAdditionalTokens: (...strings: string[]) => void;
+}

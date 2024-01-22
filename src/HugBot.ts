@@ -1,5 +1,4 @@
-import { popLeft } from "./ContextManager";
-import { IHugBot, Response } from "./typings";
+import { IHugBot, Response, ITokenCounter } from "./typings";
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
@@ -10,6 +9,7 @@ export abstract class HugBot implements IHugBot {
    * @example "HuggingFaceH4/zephyr-7b-beta"
    */
   abstract readonly languageModel: string;
+  public abstract name: string;
   private endPoint = "https://api-inference.huggingface.co/models/";
   private apiToken: string | undefined;
   /**
@@ -27,12 +27,8 @@ export abstract class HugBot implements IHugBot {
    * @example "Here you go!"
    */
   public abstract responseDirective: string;
-  /**
-   * @param number Language model context window size in tokens.
-   * Setting this to 0 disables context optimisation.
-   */
-  public abstract contextWindow: number;
   private conversation: string[] = [];
+  abstract readonly tokenCounter: ITokenCounter;
   /**
    * @param object Configuration object with language model parameters.
    */
@@ -93,9 +89,12 @@ export abstract class HugBot implements IHugBot {
     ];
   }
 
-  private maybeOptimizeChatbotContext(): void {
-    if (this.contextWindow === 0) return;
-    this.conversation = popLeft(this.getConversation, this.contextWindow);
+  private popLeft(): void {
+    console.log(this.tokenCounter.contextOverflow);
+    if (!this.tokenCounter.contextOverflow) return;
+    this.tokenCounter.popLeft();
+    this.conversation.shift();
+    this.popLeft();
   }
 
   private async sendRequest(): Promise<Response> {
@@ -123,15 +122,19 @@ export abstract class HugBot implements IHugBot {
    * @returns String Promise with AI response.
    */
   public async respondTo(userInput: string): Promise<string> {
+    this.tokenCounter.countAdditionalTokens(this.systemPrompt);
     this.addUserInput(userInput);
-    this.maybeOptimizeChatbotContext();
+    this.tokenCounter.addTokens(userInput);
+    this.popLeft();
     try {
       const response = await this.sendRequest();
       // const response = [{ generated_text: "bot response" }];
+      this.tokenCounter.addTokens(response[0].generated_text, "bot");
       this.addAiResponse(response[0].generated_text);
       return response[0].generated_text;
     } catch (error) {
       this.addAiResponse("No response...");
+      this.tokenCounter.addTokens("No response...");
       return "No response...";
     }
   }

@@ -1,17 +1,19 @@
 import { HugBot } from "./HugBot";
 import { IHugBot } from "./typings";
+import { TokenCounter } from "./TokenCounter";
 
-export { HugBot, IHugBot };
+export { HugBot };
 
 /**
  * Chat bot using HuggingFace Inference API Zephyr-7b-beta model.
  */
 export class Zephyr extends HugBot implements IHugBot {
   readonly languageModel = "HuggingFaceH4/zephyr-7b-beta";
+  public name = "Zephyr";
   public systemPrompt =
     "Respond casually. Use emojis. Express strong opinions.";
   public responseDirective = "";
-  public contextWindow = 4096;
+  readonly tokenCounter = new TokenCounter("mistral", 4096);
   public params = {
     top_k: undefined,
     top_p: 0.95,
@@ -37,10 +39,11 @@ export class Zephyr extends HugBot implements IHugBot {
  */
 export class Hermes extends HugBot implements IHugBot {
   readonly languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
+  public name = "Hermes";
   public systemPrompt =
     "Respond casually. Use emojis. Express strong opinions.";
   public responseDirective = "";
-  public contextWindow = 4096;
+  readonly tokenCounter = new TokenCounter("mistral", 4096);
   public params = {
     top_k: undefined,
     top_p: undefined,
@@ -66,9 +69,10 @@ export class Hermes extends HugBot implements IHugBot {
  */
 export class TinyLlama extends HugBot implements IHugBot {
   readonly languageModel = "TinyLlama/TinyLlama-1.1B-Chat-v1.0";
+  public name = "TinyLlama";
   public systemPrompt = "";
   public responseDirective = "";
-  public contextWindow = 2000;
+  readonly tokenCounter = new TokenCounter("mistral", 2000);
   public params = {
     top_k: undefined,
     top_p: undefined,
