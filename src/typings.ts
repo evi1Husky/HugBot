@@ -35,7 +35,7 @@ export interface ITokenCounter {
   LLMType: string;
   contextWindow: number;
   contextOverflow: boolean;
-  resetTokenCount: () => void;
+  resetTokenCounter: () => void;
   popLeft: () => void;
   addTokens: (text: string, role?: "bot" | "user") => void;
   countAdditionalTokens: (...strings: string[]) => void;
