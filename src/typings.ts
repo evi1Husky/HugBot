@@ -1,24 +1,9 @@
 export interface IHugBot {
-  languageModel: string;
   name: string;
   tokenCounter: ITokenCounter;
   promptConstructor: IPromptConstructor;
-  params: {
-    top_k: number | undefined;
-    top_p: number | undefined;
-    temperature: number;
-    repetition_penalty: number | undefined;
-    max_new_tokens: number | undefined;
-    max_time: number | undefined;
-    return_full_text: boolean;
-    num_return_sequences: number;
-    do_sample: boolean;
-    truncate: number | undefined;
-  };
-  options: {
-    wait_for_model: boolean;
-    use_cache: boolean;
-  };
+  AIClient: IHuggingFaceClient;
+  params: IParams;
   respondTo: (userInput: string) => Promise<string>;
 }
 
@@ -48,4 +33,26 @@ export interface IPromptConstructor {
   addAiResponse: (response: any) => void;
   popLeft: () => void;
   get getConversation(): string[];
+}
+
+export interface IHuggingFaceClient {
+  languageModel: string;
+  options: {
+    wait_for_model: boolean;
+    use_cache: boolean;
+  };
+  sendRequest: (consversation: string, params: IParams) => Promise<Response>;
+}
+
+export interface IParams {
+  top_k: number | undefined;
+  top_p: number | undefined;
+  temperature: number;
+  repetition_penalty: number | undefined;
+  max_new_tokens: number | undefined;
+  max_time: number | undefined;
+  return_full_text: boolean;
+  num_return_sequences: number;
+  do_sample: boolean;
+  truncate: number | undefined;
 }
