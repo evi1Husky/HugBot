@@ -3,7 +3,6 @@ export interface IHugBot {
   tokenCounter: ITokenCounter;
   promptConstructor: IPromptConstructor;
   AIClient: IHuggingFaceClient;
-  params: IParams;
   respondTo: (userInput: string) => Promise<string>;
 }
 
@@ -32,19 +31,20 @@ export interface IPromptConstructor {
   addUserInput: (userInput: string) => void;
   addAiResponse: (response: any) => void;
   popLeft: () => void;
-  get getConversation(): string[];
+  get getConversation(): string;
 }
 
 export interface IHuggingFaceClient {
   languageModel: string;
+  params: IHuggingFaceParams;
   options: {
     wait_for_model: boolean;
     use_cache: boolean;
   };
-  sendRequest: (consversation: string, params: IParams) => Promise<Response>;
+  sendRequest: (consversation: string) => Promise<Response>;
 }
 
-export interface IParams {
+export interface IHuggingFaceParams {
   top_k: number | undefined;
   top_p: number | undefined;
   temperature: number;

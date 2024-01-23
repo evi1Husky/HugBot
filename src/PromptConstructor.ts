@@ -26,11 +26,11 @@ export class PromptConstructor implements IPromptConstructor  {
     this.conversation.shift();
   }
 
-  public get getConversation(): string[] {
+  public get getConversation(): string {
     return [
       `${this.tags.system}${this.systemPrompt}${this.tags.closing}`,
       ...this.conversation,
       `${this.tags.bot}${this.responseDirective}`,
-    ];
+    ].join("");
   }
 }

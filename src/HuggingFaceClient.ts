@@ -1,21 +1,28 @@
-import { IHuggingFaceClient, IParams, Response } from "./typings";
+import { IHuggingFaceClient, IHuggingFaceParams, Response } from "./typings";
 
 export class HuggingFaceClient implements IHuggingFaceClient {
   readonly languageModel: string;
   private endPoint = "https://api-inference.huggingface.co/models/";
   private apiToken: string | undefined;
 
+  public params: IHuggingFaceParams;
+
   public options = {
     wait_for_model: true,
     use_cache: true,
   };
 
-  constructor(languageModel: string, apiToken?: string) {
+  constructor(
+    languageModel: string,
+    params: IHuggingFaceParams,
+    apiToken?: string
+  ) {
     this.languageModel = languageModel;
     this.apiToken = apiToken;
+    this.params = params;
   }
 
-  public async sendRequest(consversation: string, params: IParams): Promise<Response> {
+  public async sendRequest(consversation: string): Promise<Response> {
     const request = {
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +32,7 @@ export class HuggingFaceClient implements IHuggingFaceClient {
       body: JSON.stringify({
         inputs: consversation,
         options: this.options,
-        parameters: params,
+        parameters: this.params,
       }),
     };
     if (this.apiToken) {

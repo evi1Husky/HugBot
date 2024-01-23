@@ -3,7 +3,6 @@ import {
   ITokenCounter,
   IPromptConstructor,
   IHuggingFaceClient,
-  IParams,
 } from "./typings";
 
 /**
@@ -14,10 +13,6 @@ export abstract class HugBot implements IHugBot {
   abstract readonly promptConstructor: IPromptConstructor;
   abstract readonly tokenCounter: ITokenCounter;
   abstract readonly AIClient: IHuggingFaceClient;
-  /**
-   * @param object Configuration object with language model parameters.
-   */
-  public abstract params: IParams;
 
   private popLeftIfContextOverflow(): void {
     if (!this.tokenCounter.contextOverflow) return;
@@ -40,8 +35,8 @@ export abstract class HugBot implements IHugBot {
     this.popLeftIfContextOverflow();
     try {
       // const response = [{ generated_text: "bot response" }];
-      const conv = this.promptConstructor.getConversation.join("");
-      const response = await this.AIClient.sendRequest(conv, this.params);
+      const conv = this.promptConstructor.getConversation;
+      const response = await this.AIClient.sendRequest(conv);
       this.tokenCounter.addTokens(response[0].generated_text, "bot");
       this.promptConstructor.addAiResponse(response[0].generated_text);
       return response[0].generated_text;
