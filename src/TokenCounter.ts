@@ -2,7 +2,7 @@ import { MistralTokenizer } from "mistral-tokenizer-ts";
 import { ITokenCounter } from "./typings";
 
 /**
- * Token counter class that keeps track of the token count in prompt template,
+ * Token counter class that keeps track of the token count in prompt template
  * and detects context window overflow.
  */
 export class TokenCounter implements ITokenCounter {

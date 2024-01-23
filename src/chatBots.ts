@@ -1,15 +1,15 @@
 import { HugBot } from "./HugBot";
-import { IHugBot } from "./typings";
 import { TokenCounter } from "./TokenCounter";
 import { PromptConstructor } from "./PromptConstructor";
-import { HuggingFaceClient } from "./HuggingFaceClient";
+import { HuggingFaceTextGenClient } from "./HuggingFaceTextGenClient";
 import {
+  IHugBot,
   ITokenCounter,
   IPromptConstructor,
-  IHuggingFaceClient,
+  IHuggingFaceTextGenClient,
 } from "./typings";
 
-export { HugBot, TokenCounter, PromptConstructor, HuggingFaceClient };
+export { HugBot, TokenCounter, PromptConstructor, HuggingFaceTextGenClient };
 
 /**
  * Chat bot using HuggingFace Inference API Zephyr-7b-beta model.
@@ -26,25 +26,14 @@ export class Zephyr extends HugBot implements IHugBot {
     }
   );
   readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 4096);
-  readonly AIClient: IHuggingFaceClient;
+  readonly AIClient: IHuggingFaceTextGenClient;
   constructor(apiToken?: string) {
     super();
-    this.AIClient = new HuggingFaceClient(
+    this.AIClient = new HuggingFaceTextGenClient(
       "HuggingFaceH4/zephyr-7b-beta",
-      {
-        top_k: undefined,
-        top_p: undefined,
-        temperature: 0.6,
-        repetition_penalty: 1.1,
-        max_new_tokens: 500,
-        max_time: 30,
-        return_full_text: false,
-        num_return_sequences: 1,
-        do_sample: true,
-        truncate: undefined,
-      },
       apiToken
     );
+    this.AIClient.setParams = { temperature: 0.6 };
   }
 }
 
@@ -63,25 +52,14 @@ export class Hermes extends HugBot implements IHugBot {
     }
   );
   readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 4096);
-  readonly AIClient: IHuggingFaceClient;
+  readonly AIClient: IHuggingFaceTextGenClient;
   constructor(apiToken?: string) {
     super();
-    this.AIClient = new HuggingFaceClient(
+    this.AIClient = new HuggingFaceTextGenClient(
       "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
-      {
-        top_k: undefined,
-        top_p: undefined,
-        temperature: 0.9,
-        repetition_penalty: 1.1,
-        max_new_tokens: 500,
-        max_time: 30,
-        return_full_text: false,
-        num_return_sequences: 1,
-        do_sample: true,
-        truncate: undefined,
-      },
       apiToken
     );
+    this.AIClient.setParams = { temperature: 0.9 };
   }
 }
 
@@ -97,24 +75,18 @@ export class TinyLlama extends HugBot implements IHugBot {
     closing: "</s>\n",
   });
   readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 2000);
-  readonly AIClient: IHuggingFaceClient;
+  readonly AIClient: IHuggingFaceTextGenClient;
   constructor(apiToken?: string) {
     super();
-    this.AIClient = new HuggingFaceClient(
+    this.AIClient = new HuggingFaceTextGenClient(
       "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-      {
-        top_k: undefined,
-        top_p: undefined,
-        temperature: 0.3,
-        repetition_penalty: 1.0,
-        max_new_tokens: 200,
-        max_time: 30,
-        return_full_text: false,
-        num_return_sequences: 1,
-        do_sample: true,
-        truncate: undefined,
-      },
       apiToken
     );
+    this.AIClient.setParams = {
+      temperature: 0.3,
+      repetition_penalty: 1.0,
+      do_sample: true,
+      max_new_tokens: 250,
+    };
   }
 }

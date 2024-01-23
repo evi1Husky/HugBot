@@ -2,11 +2,16 @@ export interface IHugBot {
   name: string;
   tokenCounter: ITokenCounter;
   promptConstructor: IPromptConstructor;
-  AIClient: IHuggingFaceClient;
+  AIClient: IHuggingFaceTextGenClient;
   respondTo: (userInput: string) => Promise<string>;
 }
 
-export type Response = [{ generated_text: string }];
+export type InferenceAPIErrorResponse = {
+  error: string;
+  error_type: string;
+};
+
+export type InferenceAPITextGenResponse = [{ generated_text: string }];
 
 export interface PromptTags {
   system: string;
@@ -34,17 +39,18 @@ export interface IPromptConstructor {
   get getConversation(): string;
 }
 
-export interface IHuggingFaceClient {
+export interface IHuggingFaceTextGenClient {
   languageModel: string;
-  params: IHuggingFaceParams;
+  params: IHuggingFaceTextGenParams;
   options: {
     wait_for_model: boolean;
     use_cache: boolean;
   };
-  sendRequest: (consversation: string) => Promise<Response>;
+  set setParams(params: Partial<IHuggingFaceTextGenParams>);
+  sendRequest: (consversation: string) => Promise<string>;
 }
 
-export interface IHuggingFaceParams {
+export interface IHuggingFaceTextGenParams {
   top_k: number | undefined;
   top_p: number | undefined;
   temperature: number;

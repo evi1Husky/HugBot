@@ -2,7 +2,7 @@ import {
   IHugBot,
   ITokenCounter,
   IPromptConstructor,
-  IHuggingFaceClient,
+  IHuggingFaceTextGenClient,
 } from "./typings";
 
 /**
@@ -10,9 +10,19 @@ import {
  */
 export abstract class HugBot implements IHugBot {
   public abstract name: string;
+  /**
+   * Maneges chatbot prompt templating and conversation memory.
+   */
   abstract readonly promptConstructor: IPromptConstructor;
+  /**
+   * Token counter class that keeps track of the token count in prompt template
+   * and detects context window overflow.
+   */
   abstract readonly tokenCounter: ITokenCounter;
-  abstract readonly AIClient: IHuggingFaceClient;
+  /**
+   * A client for AI providers.
+   */
+  abstract readonly AIClient: IHuggingFaceTextGenClient;
 
   private popLeftIfContextOverflow(): void {
     if (!this.tokenCounter.contextOverflow) return;
@@ -33,17 +43,11 @@ export abstract class HugBot implements IHugBot {
     this.promptConstructor.addUserInput(userInput);
     this.tokenCounter.addTokens(userInput);
     this.popLeftIfContextOverflow();
-    try {
-      // const response = [{ generated_text: "bot response" }];
-      const conv = this.promptConstructor.getConversation;
-      const response = await this.AIClient.sendRequest(conv);
-      this.tokenCounter.addTokens(response[0].generated_text, "bot");
-      this.promptConstructor.addAiResponse(response[0].generated_text);
-      return response[0].generated_text;
-    } catch (error) {
-      this.promptConstructor.addAiResponse("No response...");
-      this.tokenCounter.addTokens("No response...");
-      return "No response...";
-    }
+    // const response = "bot response";
+    const conv = this.promptConstructor.getConversation;
+    const response = await this.AIClient.sendRequest(conv);
+    this.tokenCounter.addTokens(response, "bot");
+    this.promptConstructor.addAiResponse(response);
+    return response;
   }
 }
