@@ -1,6 +1,8 @@
 import { HugBot } from "./HugBot";
 import { IHugBot } from "./typings";
 import { TokenCounter } from "./TokenCounter";
+import { PromptConstructor } from "./PromptConstructor";
+import { ITokenCounter, IPromptConstructor } from "./typings";
 
 export { HugBot };
 
@@ -10,10 +12,16 @@ export { HugBot };
 export class Zephyr extends HugBot implements IHugBot {
   readonly languageModel = "HuggingFaceH4/zephyr-7b-beta";
   public name = "Zephyr";
-  public systemPrompt =
-    "Respond casually. Use emojis. Express strong opinions.";
-  public responseDirective = "";
-  readonly tokenCounter = new TokenCounter("mistral", 4096);
+  readonly promptConstructor: IPromptConstructor = new PromptConstructor(
+    "Respond casually. Use emojis. Express strong opinions.",
+    {
+      system: "<|system|>\n",
+      user: "<|user|>\n",
+      bot: "<|assistant|>\n",
+      closing: "</s>\n",
+    }
+  );
+  readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 4096);
   public params = {
     top_k: undefined,
     top_p: 0.95,
@@ -26,12 +34,6 @@ export class Zephyr extends HugBot implements IHugBot {
     do_sample: false,
     truncate: undefined,
   };
-  readonly tags = {
-    system: "<|system|>\n",
-    user: "<|user|>\n",
-    bot: "<|assistant|>\n",
-    closing: "</s>\n",
-  };
 }
 
 /**
@@ -40,10 +42,16 @@ export class Zephyr extends HugBot implements IHugBot {
 export class Hermes extends HugBot implements IHugBot {
   readonly languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
   public name = "Hermes";
-  public systemPrompt =
-    "Respond casually. Use emojis. Express strong opinions.";
-  public responseDirective = "";
-  readonly tokenCounter = new TokenCounter("mistral", 4096);
+  readonly promptConstructor: IPromptConstructor = new PromptConstructor(
+    "Respond casually. Use emojis. Express strong opinions.",
+    {
+      system: "<|im_start|>system\n",
+      user: "<|im_start|>user\n",
+      bot: "<|im_start|>assistant\n",
+      closing: "<|im_end|>\n",
+    }
+  );
+  readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 4096);
   public params = {
     top_k: undefined,
     top_p: undefined,
@@ -56,12 +64,6 @@ export class Hermes extends HugBot implements IHugBot {
     do_sample: true,
     truncate: undefined,
   };
-  readonly tags = {
-    system: "<|im_start|>system\n",
-    user: "<|im_start|>user\n",
-    bot: "<|im_start|>assistant\n",
-    closing: "<|im_end|>\n",
-  };
 }
 
 /**
@@ -70,9 +72,13 @@ export class Hermes extends HugBot implements IHugBot {
 export class TinyLlama extends HugBot implements IHugBot {
   readonly languageModel = "TinyLlama/TinyLlama-1.1B-Chat-v1.0";
   public name = "TinyLlama";
-  public systemPrompt = "";
-  public responseDirective = "";
-  readonly tokenCounter = new TokenCounter("mistral", 2000);
+  readonly promptConstructor: IPromptConstructor = new PromptConstructor("", {
+    system: "<|system|>\n",
+    user: "<|user|>\n",
+    bot: "<|assistant|>\n",
+    closing: "</s>\n",
+  });
+  readonly tokenCounter: ITokenCounter = new TokenCounter("mistral", 2000);
   public params = {
     top_k: undefined,
     top_p: undefined,
@@ -84,11 +90,5 @@ export class TinyLlama extends HugBot implements IHugBot {
     num_return_sequences: 1,
     do_sample: false,
     truncate: undefined,
-  };
-  readonly tags = {
-    system: "<|system|>\n",
-    user: "<|user|>\n",
-    bot: "<|assistant|>\n",
-    closing: "</s>\n",
   };
 }

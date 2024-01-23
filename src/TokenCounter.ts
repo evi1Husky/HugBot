@@ -78,7 +78,7 @@ export class TokenCounter implements ITokenCounter {
   }
 
   /**
-   * Removes oldest conversation entry on context overflow recalculates token count.
+   * Removes oldest conversation entry if context overflow, recalculates token count.
    */
   public popLeft(): void {
     const firstTokens = this.tokenHistory.shift();

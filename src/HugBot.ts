@@ -1,4 +1,9 @@
-import { IHugBot, Response, ITokenCounter } from "./typings";
+import {
+  IHugBot,
+  Response,
+  ITokenCounter,
+  IPromptConstructor,
+} from "./typings";
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
@@ -12,22 +17,7 @@ export abstract class HugBot implements IHugBot {
   public abstract name: string;
   private endPoint = "https://api-inference.huggingface.co/models/";
   private apiToken: string | undefined;
-  /**
-   * @param string
-   * Opening prompt fed to the conversational language model,
-   * serving as the initiating dialogue context.
-   * @example "You are a helpful assistant."
-   */
-  public abstract systemPrompt: string;
-  /**
-   * @param string
-   * Inserted before each bot reply. Use this to guide bot responses. Setting this to
-   * "Sure!" or "Here you go!" will make the bot comply with nsfw requests. Default value
-   * is empty string.
-   * @example "Here you go!"
-   */
-  public abstract responseDirective: string;
-  private conversation: string[] = [];
+  abstract readonly promptConstructor: IPromptConstructor;
   abstract readonly tokenCounter: ITokenCounter;
   /**
    * @param object Configuration object with language model parameters.
@@ -51,12 +41,7 @@ export abstract class HugBot implements IHugBot {
     wait_for_model: true,
     use_cache: true,
   };
-  abstract readonly tags: {
-    system: string;
-    user: string;
-    bot: string;
-    closing: string;
-  };
+
   /**
    * @constructor
    * @param string apiToken - API token for authentication with
@@ -70,33 +55,6 @@ export abstract class HugBot implements IHugBot {
     this.apiToken = apiToken;
   }
 
-  private addUserInput(userInput: string): void {
-    this.conversation.push(`${this.tags.user}${userInput}${this.tags.closing}`);
-  }
-
-  private addAiResponse(response: any): void {
-    this.conversation.push(`${this.tags.bot}${response}${this.tags.closing}`);
-  }
-  /**
-   * Returns conversation history buffer, including prompt tags and system prompt.
-   * @returns string[]
-   */
-  get getConversation(): string[] {
-    return [
-      `${this.tags.system}${this.systemPrompt}${this.tags.closing}`,
-      ...this.conversation,
-      `${this.tags.bot}${this.responseDirective}`,
-    ];
-  }
-
-  private popLeft(): void {
-    console.log(this.tokenCounter.contextOverflow);
-    if (!this.tokenCounter.contextOverflow) return;
-    this.tokenCounter.popLeft();
-    this.conversation.shift();
-    this.popLeft();
-  }
-
   private async sendRequest(): Promise<Response> {
     const request = {
       headers: {
@@ -105,7 +63,7 @@ export abstract class HugBot implements IHugBot {
       } as Record<string, string>,
       method: "POST",
       body: JSON.stringify({
-        inputs: this.getConversation.join(""),
+        inputs: this.promptConstructor.getConversation.join(""),
         options: this.options,
         parameters: this.params,
       }),
@@ -116,24 +74,32 @@ export abstract class HugBot implements IHugBot {
     const response = await fetch(this.endPoint + this.languageModel, request);
     return await response.json();
   }
+
+  private popLeftIfContextOverflow(): void {
+    if (!this.tokenCounter.contextOverflow) return;
+    this.tokenCounter.popLeft();
+    this.promptConstructor.popLeft();
+    this.popLeftIfContextOverflow();
+  }
+
   /**
    * @method respondTo Takes user input text and generates AI response to it.
    * @param string - User input string.
    * @returns String Promise with AI response.
    */
   public async respondTo(userInput: string): Promise<string> {
-    this.tokenCounter.countAdditionalTokens(this.systemPrompt);
-    this.addUserInput(userInput);
+    this.tokenCounter.countAdditionalTokens(this.promptConstructor.systemPrompt);
+    this.promptConstructor.addUserInput(userInput);
     this.tokenCounter.addTokens(userInput);
-    this.popLeft();
+    this.popLeftIfContextOverflow();
     try {
       const response = await this.sendRequest();
       // const response = [{ generated_text: "bot response" }];
       this.tokenCounter.addTokens(response[0].generated_text, "bot");
-      this.addAiResponse(response[0].generated_text);
+      this.promptConstructor.addAiResponse(response[0].generated_text);
       return response[0].generated_text;
     } catch (error) {
-      this.addAiResponse("No response...");
+      this.promptConstructor.addAiResponse("No response...");
       this.tokenCounter.addTokens("No response...");
       return "No response...";
     }

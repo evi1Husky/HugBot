@@ -1,9 +1,8 @@
 export interface IHugBot {
   languageModel: string;
   name: string;
-  systemPrompt: string;
-  responseDirective: string;
-  tokenCounter: ITokenCounter | undefined;
+  tokenCounter: ITokenCounter;
+  promptConstructor: IPromptConstructor;
   params: {
     top_k: number | undefined;
     top_p: number | undefined;
@@ -20,16 +19,17 @@ export interface IHugBot {
     wait_for_model: boolean;
     use_cache: boolean;
   };
-  tags: {
-    system: string;
-    user: string;
-    bot: string;
-    closing: string;
-  };
   respondTo: (userInput: string) => Promise<string>;
 }
 
 export type Response = [{ generated_text: string }];
+
+export interface PromptTags {
+  system: string;
+  user: string;
+  bot: string;
+  closing: string;
+}
 
 export interface ITokenCounter {
   LLMType: string;
@@ -39,4 +39,13 @@ export interface ITokenCounter {
   popLeft: () => void;
   addTokens: (text: string, role?: "bot" | "user") => void;
   countAdditionalTokens: (...strings: string[]) => void;
+}
+
+export interface IPromptConstructor {
+  systemPrompt: string;
+  responseDirective: string;
+  addUserInput: (userInput: string) => void;
+  addAiResponse: (response: any) => void;
+  popLeft: () => void;
+  get getConversation(): string[];
 }
