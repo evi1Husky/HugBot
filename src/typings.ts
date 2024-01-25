@@ -1,6 +1,5 @@
 export interface IHugBot {
   name: string;
-  tokenCounter: ITokenCounter;
   promptConstructor: IPromptConstructor;
   AIClient: IHuggingFaceTextGenClient;
   respondTo: (userInput: string) => Promise<string>;
@@ -20,33 +19,25 @@ export interface PromptTags {
   closing: string;
 }
 
-export interface ITokenCounter {
-  LLMType: string;
-  contextWindow: number;
-  contextOverflow: boolean;
-  resetTokenCounter: () => void;
-  popLeft: () => void;
-  addTokens: (text: string, role?: "bot" | "user") => void;
-  countAdditionalTokens: (...strings: string[]) => void;
-}
-
 export interface IPromptConstructor {
+  tags: PromptTags;
   systemPrompt: string;
   responseDirective: string;
+  LLMType: "llama" | "mistral";
+  contextWindow: number;
   addUserInput: (userInput: string) => void;
   addAiResponse: (response: any) => void;
-  popLeft: () => void;
   get getConversation(): string;
 }
 
 export interface IHuggingFaceTextGenClient {
   languageModel: string;
+  apiToken: string | undefined;
   params: IHuggingFaceTextGenParams;
   options: {
     wait_for_model: boolean;
     use_cache: boolean;
   };
-  set setParams(params: Partial<IHuggingFaceTextGenParams>);
   sendRequest: (consversation: string) => Promise<string>;
 }
 

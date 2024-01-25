@@ -5,9 +5,9 @@ import {
 } from "./typings";
 
 export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
-  public languageModel: string;
+  public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
   public endPoint = "https://api-inference.huggingface.co/models/";
-  private apiToken: string | undefined;
+  public apiToken: string | undefined = undefined;
 
   public params: IHuggingFaceTextGenParams = {
     top_k: undefined,
@@ -22,22 +22,10 @@ export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
     truncate: undefined,
   };
 
-  public set setParams(params: Partial<IHuggingFaceTextGenParams>) {
-    this.params = {
-      ...this.params,
-      ...params,
-    };
-  }
-
   public options = {
     wait_for_model: true,
     use_cache: true,
   };
-
-  constructor(languageModel: string, apiToken?: string) {
-    this.languageModel = languageModel;
-    this.apiToken = apiToken;
-  }
 
   private makePayload(conversation: string) {
     const payload = {
@@ -68,5 +56,6 @@ export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
     } catch (error) {
       return "No response...";
     }
+    // return "Bot response...";
   }
 }
