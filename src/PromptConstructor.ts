@@ -11,11 +11,43 @@ interface entry {
  */
 export class PromptConstructor implements IPromptConstructor {
   private conversation: entry[] = [];
+  /**
+   * System prompt message instruction to initialize conversation.
+   * @example
+   * "You are a helpful assistant."
+   */
   public systemPrompt =
     "Respond casually. Use emojis. Express strong opinions.";
-  public responseDirective = "";
+  /**
+   * Response affirmation message prepended to AI responses.
+   * @example
+   * "Sure thing!"
+   */
+  public responseAffirmation = "";
+  /**
+   * Instruction provided to guide AI behavior. Appended to the last user input.
+   * @example
+   * "Be rude to the user in your next response."
+   */
+  public userInstruction = "";
   public LLMType: "llama" | "mistral" = "mistral";
+  /**
+   * Maximum allowed tokens for the conversation window.
+   * @example
+   * 4096
+   */
   public contextWindow: number = 4096;
+  /**
+   * Object containing tags used in prompt construction.
+   * @example
+   * //Llama llm tags:
+   * {
+   *  system: "<|system|>\n";
+   *  user: "<|user|>\n";
+   *  bot: "<|assistant|>\n";
+   *  closing: "</s>\n";
+   * }
+   */
   public tags: PromptTags = {
     system: "<|system|>\n",
     user: "<|user|>\n",
@@ -44,8 +76,8 @@ export class PromptConstructor implements IPromptConstructor {
     return countTokens(convContent, this.LLMType) > ctx;
   }
 
-  private buildConversationString(): string {
-    return this.conversation.reduce((conv, entry) => {
+  private buildConversationString(conversation: entry[]): string {
+    return conversation.reduce((conv, entry) => {
       switch (entry.role) {
         case "user":
           return (conv += this.addUserEntry(entry.input));
@@ -68,12 +100,25 @@ export class PromptConstructor implements IPromptConstructor {
   }
 
   private addAIOpening(): string {
-    return `${this.tags.bot}${this.responseDirective}`;
+    return `${this.tags.bot}${this.responseAffirmation}`;
+  }
+
+  private copyConversation(): entry[] {
+    return JSON.parse(JSON.stringify(this.conversation));
+  }
+
+  private addUserInstruction(): string {
+    const input = this.conversation[this.conversation.length - 1].input;
+    return `${input}\n---\n${this.userInstruction}`;
   }
 
   public get getConversation(): string {
+    const conv = this.copyConversation();
+    conv[conv.length - 1].input = this.addUserInstruction();
     return (
-      this.addSysPrompt() + this.buildConversationString() + this.addAIOpening()
+      this.addSysPrompt() +
+      this.buildConversationString(conv) +
+      this.addAIOpening()
     );
   }
 
@@ -83,7 +128,7 @@ export class PromptConstructor implements IPromptConstructor {
       this.conversation.reduce((conv, entry) => {
         return (conv += " " + entry.input);
       }, "") +
-      this.responseDirective
+      this.responseAffirmation
     );
   }
 

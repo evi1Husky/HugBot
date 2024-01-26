@@ -56,6 +56,6 @@ export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
     } catch (error) {
       return "No response...";
     }
-    // return "Bot response...";
+    return "Bot response...";
   }
 }

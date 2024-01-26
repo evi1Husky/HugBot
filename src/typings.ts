@@ -22,7 +22,8 @@ export interface PromptTags {
 export interface IPromptConstructor {
   tags: PromptTags;
   systemPrompt: string;
-  responseDirective: string;
+  responseAffirmation: string;
+  userInstruction: string;
   LLMType: "llama" | "mistral";
   contextWindow: number;
   addUserInput: (userInput: string) => void;
