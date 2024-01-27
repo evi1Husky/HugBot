@@ -6,48 +6,14 @@ interface entry {
   input: string;
 }
 
-/**
- * LLM Prompt templating engine. Maneges chatbot prompt and conversation memory.
- */
 export class PromptConstructor implements IPromptConstructor {
   private conversation: entry[] = [];
-  /**
-   * System prompt message instruction to initialize conversation.
-   * @example
-   * "You are a helpful assistant."
-   */
   public systemPrompt =
     "Respond casually. Use emojis. Express strong opinions.";
-  /**
-   * Response affirmation message prepended to AI responses.
-   * @example
-   * "Sure thing!"
-   */
   public responseAffirmation = "";
-  /**
-   * Instruction provided to guide AI behavior. Appended to the last user input.
-   * @example
-   * "Be rude to the user in your next response."
-   */
   public userInstruction = "";
   public LLMType: "llama" | "mistral" = "mistral";
-  /**
-   * Maximum allowed tokens for the conversation window.
-   * @example
-   * 4096
-   */
   public contextWindow: number = 4096;
-  /**
-   * Object containing tags used in prompt construction.
-   * @example
-   * //Llama llm tags:
-   * {
-   *  system: "<|system|>\n";
-   *  user: "<|user|>\n";
-   *  bot: "<|assistant|>\n";
-   *  closing: "</s>\n";
-   * }
-   */
   public tags: PromptTags = {
     system: "<|system|>\n",
     user: "<|user|>\n",

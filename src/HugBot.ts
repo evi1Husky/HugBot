@@ -1,4 +1,8 @@
-import { IHugBot, IPromptConstructor, IHuggingFaceTextGenClient } from "./typings";
+import {
+  IHugBot,
+  IPromptConstructor,
+  IHuggingFaceTextGenClient,
+} from "./typings";
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
@@ -7,12 +11,30 @@ export abstract class HugBot implements IHugBot {
   public abstract name: string;
   /**
    * LLM Prompt templating engine. Maneges chatbot prompt and conversation memory.
+   * @param systemPrompt System prompt message instruction to initialize conversation.
+   * @example "You are a helpful assistant."
+   * @param responseAffirmation Response affirmation message prepended to
+   * AI responses.
+   * @example "Sure thing!"
+   * @param userInstruction Instruction provided to guide AI behavior.
+   * Appended to the last user input.
+   * @example "Be rude to the user in your next response."
+   * @param LLMType Specifies llm type for token counting algorythm.
+   * @example "llama"
+   * @param tags Object containing tags used in prompt construction.
+   * @example
+   * {
+   *  system: "<|system|>\n";
+   *  user: "<|user|>\n";
+   *  bot: "<|assistant|>\n";
+   *  closing: "</s>\n";
+   * }
+   * @param contextWindow
+   * Maximum allowed tokens for the conversation window.
+   * @example
+   * 4096
    */
   abstract readonly promptConstructor: IPromptConstructor;
-
-  /**
-   * A client for AI providers. Holds LLM settings.
-   */
   abstract readonly AIClient: IHuggingFaceTextGenClient;
 
   /**
