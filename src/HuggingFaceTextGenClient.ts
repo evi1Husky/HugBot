@@ -2,11 +2,11 @@ import {
   IHuggingFaceTextGenClient,
   IHuggingFaceTextGenParams,
   InferenceAPITextGenResponse,
-} from "./typings";
+} from "./typings"
 
 export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
-  public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
-  public endPoint = "https://api-inference.huggingface.co/models/";
+  public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"
+  public endPoint = "https://api-inference.huggingface.co/models/"
   public apiToken: string | undefined = undefined;
 
   public params: IHuggingFaceTextGenParams = {
@@ -20,7 +20,7 @@ export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
     num_return_sequences: 1,
     do_sample: true,
     truncate: undefined,
-  };
+  }
 
   public options = {
     wait_for_model: true,
@@ -39,23 +39,23 @@ export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
         options: this.options,
         parameters: this.params,
       }),
-    };
+    }
     if (this.apiToken) {
-      payload.headers.Authorization = `Bearer ${this.apiToken}`;
+      payload.headers.Authorization = `Bearer ${this.apiToken}`
     }
     return payload;
   }
 
   public async sendRequest(conversation: string): Promise<string> {
-    const payload = this.makePayload(conversation);
+    const payload = this.makePayload(conversation)
     try {
-      const response = await fetch(this.endPoint + this.languageModel, payload);
-      const generatedText: InferenceAPITextGenResponse = await response.json();
-      if ("error" in generatedText) console.error(generatedText.error);
+      const response = await fetch(this.endPoint + this.languageModel, payload)
+      const generatedText: InferenceAPITextGenResponse = await response.json()
+      if ("error" in generatedText) console.error(generatedText.error)
       return generatedText[0].generated_text;
     } catch (error) {
-      return "No response...";
+      return "No response..."
     }
-    return "Bot response...";
+    return "Bot response..."
   }
 }
