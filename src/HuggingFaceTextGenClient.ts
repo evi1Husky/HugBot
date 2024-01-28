@@ -1,9 +1,7 @@
-import {
-  IHuggingFaceTextGenClient, IHuggingFaceTextGenParams,
-  InferenceAPITextGenResponse,
-} from "./typings"
+import { IAIClient, IHuggingFaceTextGenParams, InferenceAPITextGenResponse } 
+from "./typings"
 
-export class HuggingFaceTextGenClient implements IHuggingFaceTextGenClient {
+export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenParams {
   public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"
   private endPoint = "https://api-inference.huggingface.co/models/"
   public apiToken: string | undefined = undefined

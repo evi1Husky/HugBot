@@ -1,4 +1,5 @@
-import { PromptTags, IPromptConstructor } from "./typings"
+import { PromptTags, IPromptConstructor, IPromptConstructorParams }
+from "./typings"
 import { countTokens } from "./Tokenizer"
 
 interface entry {
@@ -9,18 +10,23 @@ interface entry {
 /**
  * LLM Prompt templating engine. Maneges chatbot prompt and conversation memory.
  */
-export class PromptConstructor implements IPromptConstructor {
+export class PromptConstructor implements IPromptConstructor, IPromptConstructorParams {
   private conversation: entry[] = []
   public systemPrompt = "Respond casually. Use emojis. Express strong opinions."
   public responseAffirmation = ""
   public userInstruction = ""
   public LLMType: "llama" | "mistral" = "mistral"
   public contextWindow: number = 4096
+
   public tags: PromptTags = {
     system: "<|system|>\n",
     user: "<|user|>\n",
     bot: "<|assistant|>\n",
     closing: "</s>\n",
+  }
+
+  constructor(params?: Partial<IPromptConstructorParams>) {
+    Object.assign(this, params)
   }
 
   public addUserInput(userInput: string): void {

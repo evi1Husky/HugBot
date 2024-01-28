@@ -1,15 +1,14 @@
-import { IHugBot, IPromptConstructor, IHuggingFaceTextGenClient }
+import { IHugBot, IPromptConstructor, IAIClient }
 from "./typings"
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
  */
 export class HugBot implements IHugBot {
-  readonly AIClient: IHuggingFaceTextGenClient
-  readonly promptConstructor: IPromptConstructor
+  readonly AIClient
+  readonly promptConstructor
 
-  constructor(client: IHuggingFaceTextGenClient, 
-              constructor: IPromptConstructor) {
+  constructor(client: IAIClient, constructor: IPromptConstructor) {
     this.AIClient = client
     this.promptConstructor = constructor
   }

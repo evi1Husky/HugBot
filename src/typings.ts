@@ -1,6 +1,6 @@
 export interface IHugBot {
   promptConstructor: IPromptConstructor
-  AIClient: IHuggingFaceTextGenClient
+  AIClient: IAIClient
   /**
   * @method respondTo Takes user input text and generates AI response to it.
   * @param string - User input string.
@@ -9,7 +9,7 @@ export interface IHugBot {
   respondTo: (userInput: string) => Promise<string>
 }
 
-export interface IHuggingFaceTextGenClient extends IHuggingFaceTextGenParams {
+export interface IAIClient {
   sendRequest: (consversation: string) => Promise<string>
 }
 
@@ -45,7 +45,13 @@ export interface PromptTags {
 }
 
 export interface IPromptConstructor {
- /**
+  addUserInput: (userInput: string) => void
+  addAiResponse: (response: string) => void
+  get getConversation(): string
+}
+
+export interface IPromptConstructorParams {
+  /**
   * @param tags Object containing tags used in prompt construction.
   * @example
   * {
@@ -85,7 +91,4 @@ export interface IPromptConstructor {
   * 4096
   */
   contextWindow: number
-  addUserInput: (userInput: string) => void
-  addAiResponse: (response: any) => void
-  get getConversation(): string
 }
