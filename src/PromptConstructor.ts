@@ -8,33 +8,10 @@ interface entry {
 
 /**
  * LLM Prompt templating engine. Maneges chatbot prompt and conversation memory.
- * @param systemPrompt System prompt message instruction to initialize conversation.
- * @example "You are a helpful assistant."
- * @param responseAffirmation Response affirmation message prepended to
- * AI responses.
- * @example "Sure thing!"
- * @param userInstruction Instruction provided to guide AI behavior.
- * Appended to the last user input.
- * @example "Be rude to the user in your next response."
- * @param LLMType Specifies llm type for token counting algorythm.
- * @example "llama"
- * @param tags Object containing tags used in prompt construction.
- * @example
- * {
- *  system: "<|system|>\n"
- *  user: "<|user|>\n"
- *  bot: "<|assistant|>\n"
- *  closing: "</s>\n"
- * }
- * @param contextWindow
- * Maximum allowed tokens for the conversation window.
- * @example
- * 4096
  */
 export class PromptConstructor implements IPromptConstructor {
   private conversation: entry[] = []
-  public systemPrompt =
-    "Respond casually. Use emojis. Express strong opinions."
+  public systemPrompt = "Respond casually. Use emojis. Express strong opinions."
   public responseAffirmation = ""
   public userInstruction = ""
   public LLMType: "llama" | "mistral" = "mistral"
@@ -70,10 +47,8 @@ export class PromptConstructor implements IPromptConstructor {
   private buildConversationString(conversation: entry[]): string {
     return conversation.reduce((conv, entry) => {
       switch (entry.role) {
-        case "user":
-          return (conv += this.addUserEntry(entry.input))
-        default:
-          return (conv += this.addAIentry(entry.input))
+        case "user": return conv += this.addUserEntry(entry.input)
+        default: return conv += this.addAIentry(entry.input)
       }
     }, "")
   }
@@ -99,38 +74,27 @@ export class PromptConstructor implements IPromptConstructor {
   }
 
   private addUserInstruction(): string {
-    if (this.userInstruction === "") return ""
     const input = this.conversation[this.conversation.length - 1].input
     return `${input}\n---\n${this.userInstruction}`
   }
 
   public get getConversation(): string {
     const conv = this.copyConversation()
-    conv[conv.length - 1].input = this.addUserInstruction()
-    return (
-      this.addSysPrompt() +
-      this.buildConversationString(conv) +
-      this.addAIOpening()
-    )
+    const sysPrompt = this.systemPrompt ? this.addSysPrompt() : ""
+    if (this.userInstruction) conv[conv.length - 1].input = this.addUserInstruction()
+    return sysPrompt + this.buildConversationString(conv) + this.addAIOpening()
   }
 
   private get getRawConversationContent(): string {
-    return (
-      this.systemPrompt +
-      this.conversation.reduce((conv, entry) => {
-        return (conv += " " + entry.input)
-      }, "") +
-      this.responseAffirmation
-    )
+    const conv = this.conversation.reduce((acc, x) => acc + " " + x.input , "")
+    return this.systemPrompt + conv + this.responseAffirmation + 
+      this.userInstruction
   }
 
   private get getAverageBotReplyTokens(): number {
     const aiReplies = this.conversation.filter((x) => x.role === "ai")
-    return Math.ceil(
-      aiReplies.reduce(
-        (acc, x) => acc + countTokens(x.input, this.LLMType),
-        0
-      ) / aiReplies.length
-    )
+    const avg = aiReplies.reduce((acc, x) => 
+      acc + countTokens(x.input, this.LLMType), 0)
+    return Math.ceil(avg / aiReplies.length)
   }
 }

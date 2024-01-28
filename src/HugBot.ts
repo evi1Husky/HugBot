@@ -1,31 +1,24 @@
-import {
-  IHugBot,
-  IPromptConstructor,
-  IHuggingFaceTextGenClient,
-} from "./typings";
+import { IHugBot, IPromptConstructor, IHuggingFaceTextGenClient }
+from "./typings"
 
 /**
  * Chat bot agent for HuggingFace Inference API text generation task models.
  */
-export abstract class HugBot implements IHugBot {
-  public abstract name: string;
-  /**
-   * LLM Prompt templating engine. Maneges chatbot prompt and conversation memory.
-   */
-  abstract readonly promptConstructor: IPromptConstructor;
-  abstract readonly AIClient: IHuggingFaceTextGenClient;
+export class HugBot implements IHugBot {
+  readonly AIClient: IHuggingFaceTextGenClient
+  readonly promptConstructor: IPromptConstructor
 
-  /**
-   * @method respondTo Takes user input text and generates AI response to it.
-   * @param string - User input string.
-   * @returns String Promise with AI response.
-   */
+  constructor(client: IHuggingFaceTextGenClient, 
+              constructor: IPromptConstructor) {
+    this.AIClient = client
+    this.promptConstructor = constructor
+  }
+
   public async respondTo(userInput: string): Promise<string> {
-    this.promptConstructor.addUserInput(userInput);
-    const conv = this.promptConstructor.getConversation;
-    console.log(conv)
-    const response = await this.AIClient.sendRequest(conv);
-    this.promptConstructor.addAiResponse(response);
-    return response;
+    this.promptConstructor.addUserInput(userInput)
+    const conv = this.promptConstructor.getConversation
+    const response = await this.AIClient.sendRequest(conv)
+    this.promptConstructor.addAiResponse(response)
+    return response
   }
 }
