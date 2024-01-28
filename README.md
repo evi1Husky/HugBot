@@ -26,10 +26,10 @@ npm i hugbot
 ## Usage
 
 ```typescript
-import { Zephyr } from "hugbot";
+import { Zephyr } from "hugbot"
 
-const zephyr = new Zephyr();
-const response = await zephyr.respondTo("Hi!");
+const zephyr = Zephyr()
+const response = await zephyr.respondTo("Hi!")
 ```
 
 ## License
