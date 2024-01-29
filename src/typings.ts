@@ -4,18 +4,24 @@ export interface IHugBot {
   /**
   * @method respondTo Takes user input text and generates AI response to it.
   * @param string - User input string.
+  * @param string - Optional api token for AI client.
   * @returns String Promise with AI response.
   */
-  respondTo: (userInput: string) => Promise<string>
+  respondTo: (userInput: string, apiToken?: string) => Promise<string>
+}
+
+export interface IHugBotDependencies {
+  AIClient: IAIClient
+  promptConstructor: IPromptConstructor
 }
 
 export interface IAIClient {
-  sendRequest: (consversation: string) => Promise<string>
+  sendRequest: (consversation: string, apiToken?: string) => Promise<string>
 }
 
 export interface IHuggingFaceTextGenParams {
   languageModel: string
-  apiToken: string | undefined
+  endPoint: string
   topK: number | undefined
   topP: number | undefined
   temperature: number

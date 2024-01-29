@@ -3,14 +3,13 @@ from "./typings"
 
 export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenParams {
   public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"
-  private endPoint = "https://api-inference.huggingface.co/models/"
-  public apiToken: string | undefined = undefined
+  public endPoint = "https://api-inference.huggingface.co/models/"
 
   public topK = undefined
   public topP = undefined
   public temperature = 0.7
   public repetitionPenalty = 1.1
-  public maxNewTokens = 500
+  public maxNewTokens = 512
   public maxTime = 30
   public returnFullText = false
   public numReturnSequences = 1
@@ -24,7 +23,7 @@ export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenP
     Object.assign(this, params)
   }
 
-  private makePayload(conversation: string) {
+  private makePayload(conversation: string, apiToken?: string) {
     const payload = {
       headers: {
         "Content-Type": "application/json",
@@ -51,12 +50,12 @@ export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenP
         },
       }),
     }
-    if (this.apiToken) payload.headers.Authorization = `Bearer ${this.apiToken}`
+    if (apiToken) payload.headers.Authorization = `Bearer ${apiToken}`
     return payload
   }
 
-  public async sendRequest(conversation: string): Promise<string> {
-    const payload = this.makePayload(conversation)
+  public async sendRequest(conversation: string, apiToken?: string): Promise<string> {
+    const payload = this.makePayload(conversation, apiToken)
     try {
       const response = await fetch(this.endPoint + this.languageModel, payload)
       const generatedText: InferenceAPITextGenResponse = await response.json()
