@@ -1,8 +1,9 @@
 import { HugBot } from "./HugBot"
 import { PromptConstructor } from "./PromptConstructor"
 import { HuggingFaceTextGenClient } from "./HuggingFaceTextGenClient"
+import { AIClientMock } from "./AIClientMock"
 import { IHugBot } from "./typings"
-export { HugBot, PromptConstructor, HuggingFaceTextGenClient }
+export { HugBot, PromptConstructor, HuggingFaceTextGenClient, AIClientMock }
 
 /**
  * Chat bot using HuggingFace Inference API Nous-Hermes-2-Mixtral-8x7B-DPO model.
