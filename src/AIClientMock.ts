@@ -1,7 +1,7 @@
-import { IAIClient } from "./typings"
+import { IAIClient, IHuggingFaceTextGenParams } from "./typings"
 
 export class AIClientMock implements IAIClient {
-  #BOT_REPLIES: string[] = [
+  private BOT_REPLIES: string[] = [
     "Whoa, neat idea! Let me see if I find anything interesting...",
     "Hey, nice one! Do you have any theories on that?",
     "Whoa, no kidding! Did your jaw drop too?",
@@ -39,8 +39,7 @@ export class AIClientMock implements IAIClient {
   ]
 
   public async sendRequest(consversation: string, apiToken?: string): Promise<string> {
-    console.log(consversation)
-    const rnd = Math.floor(Math.random() * this.#BOT_REPLIES.length)
-    return this.#BOT_REPLIES[rnd]
+    const rnd = Math.floor(Math.random() * this.BOT_REPLIES.length)
+    return this.BOT_REPLIES[rnd]
   }
 }

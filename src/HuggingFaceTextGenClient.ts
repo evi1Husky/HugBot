@@ -7,7 +7,7 @@ export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenP
 
   public topK = undefined
   public topP = undefined
-  public temperature = 0.7
+  public temperature = 0.9
   public repetitionPenalty = 1.1
   public maxNewTokens = 512
   public maxTime = 30
@@ -20,6 +20,10 @@ export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenP
   public useCache = true
 
   constructor(params?: Partial<IHuggingFaceTextGenParams>) {
+    Object.assign(this, params)
+  }
+
+  public setParams(params?: Partial<IHuggingFaceTextGenParams>) {
     Object.assign(this, params)
   }
 
