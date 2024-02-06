@@ -40,11 +40,11 @@ const response = await zephyr.respondTo("Hi!", apiToken)
 
 ```typescript
 // Import all required components and a builder function
-import { hugBot, HuggingFaceTextGenClient, PromptConstructor, 
+import { buildHugBot, HuggingFaceTextGenClient, PromptConstructor, 
 ShortTermMemory } from "hugbot"
 
 // Use the builder function to construct and configure the bot
-const hermes = hugBot("Hermes")
+const hermes = buildHugBot("Hermes")
   .withAiClient(new HuggingFaceTextGenClient)
   .withShortTermMemory(new ShortTermMemory)
   .withPromptConstructor(new PromptConstructor)
@@ -109,7 +109,7 @@ tags: {
 
 ## components
 
-- hugBot - builder function for constructing and configuring chatbots
+- buildHugBot - builder function for constructing and configuring chatbots
 - HugBot - base hugbot class
 - PromptConstructor - used for prompt templating
 - ShortTermMemory - conversation memory buffer

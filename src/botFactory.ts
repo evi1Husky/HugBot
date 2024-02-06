@@ -4,13 +4,13 @@ import { HuggingFaceTextGenClient } from "./components/AIClient/HuggingFaceTextG
 import { AIClientMock } from "./components/AIClient/AIClientMock"
 import { ShortTermMemory } from "./components/ShortTermMemory/ShortTermMemory"
 import { BotStorage } from "./utility/botStorage"
-import { hugBot } from "./utility/botBuilder"
+import { buildHugBot } from "./utility/botBuilder"
 
-export { hugBot, BotStorage, HugBot, PromptConstructor, HuggingFaceTextGenClient, 
+export { buildHugBot, BotStorage, HugBot, PromptConstructor, HuggingFaceTextGenClient, 
 AIClientMock, ShortTermMemory }
 
 export const botStorage = BotStorage()
-  .set("Zephyr", hugBot("Zephyr")
+  .set("Zephyr", buildHugBot("Zephyr")
   .withAiClient(new HuggingFaceTextGenClient)
   .withParams({
     languageModel: "HuggingFaceH4/zephyr-7b-beta",
@@ -21,7 +21,7 @@ export const botStorage = BotStorage()
       bot: "<|assistant|>\n",
       closing: "</s>\n",
     }}).build)
-  .set("Hermes", hugBot("Hermes")
+  .set("Hermes", buildHugBot("Hermes")
   .withAiClient(new HuggingFaceTextGenClient)
   .withParams({
     languageModel: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
@@ -32,7 +32,7 @@ export const botStorage = BotStorage()
       bot: "<|im_start|>assistant\n",
       closing: "<|im_end|>\n",
     }}).build)
-  .set("TinyLlama", hugBot("TinyLlama")
+  .set("TinyLlama", buildHugBot("TinyLlama")
   .withAiClient(new HuggingFaceTextGenClient)
   .withParams({
     languageModel: "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
@@ -47,7 +47,7 @@ export const botStorage = BotStorage()
       bot: "<|assistant|>\n",
       closing: "</s>\n",
     }}).build)
-  .set("StarCoder", hugBot("StarCoder")
+  .set("StarCoder", buildHugBot("StarCoder")
   .withAiClient(new HuggingFaceTextGenClient)
   .withParams({
     languageModel: "HuggingFaceH4/starchat-beta",
@@ -64,4 +64,4 @@ export const botStorage = BotStorage()
       closing: "<|end|>\n",
     }}).build)
   .set("TestBot", 
-  hugBot("TestBot").withAiClient(new AIClientMock).build)
+  buildHugBot("TestBot").withAiClient(new AIClientMock).build)

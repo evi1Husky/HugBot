@@ -3,7 +3,7 @@ import { setParams } from "../utility/inputValidation"
 import { IAIClient, IShortTermMemory, IPromptConstructor ,
 HugBotParams } from "../HugBot/typings"
 
-export const hugBot = (name?: string) => {
+export const buildHugBot = (name?: string) => {
   const hugBot = new HugBot() 
 
   const withAiClient = (client: IAIClient) => {
