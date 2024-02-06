@@ -49,14 +49,14 @@ const hermes = hugBot("Hermes")
   .withShortTermMemory(new ShortTermMemory)
   .withPromptConstructor(new PromptConstructor)
   .withParams({
-    languageModel: "HuggingFaceH4/zephyr-7b-beta",
+    languageModel: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
     systemPrompt: "You are a helpfull AI assistant.",
-    temperature: 0.7,
+    temperature: 0.9,
     tags: {
-      system: "<|system|>\n",
-      user: "<|user|>\n",
-      bot: "<|assistant|>\n",
-      closing: "</s>\n",
+      system: "<|im_start|>system\n",
+      user: "<|im_start|>user\n",
+      bot: "<|im_start|>assistant\n",
+      closing: "<|im_end|>\n",
     }}).build()
 
 hermes.respondTo("Hi!").then((response) => console.log(response))
