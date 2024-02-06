@@ -1,8 +1,16 @@
-import { IShortTermMemory, ShortTermMemoryParams, MemoryEntry, 
-MemoryDump } from "./typings";
-import { mistralTokenizer } from "./Tokenizers";
+import { mistralTokenizer } from "../../utility/Tokenizers";
+import { setParams } from "../../utility/inputValidation"
+import { MemoryEntry } from "../../HugBot/typings"
 
-export class ShortTermMemory implements IShortTermMemory {
+export type ShortTermMemoryParams = {
+  tokenizer: (text: string) => number
+  contextWindow: number
+  systemPrompt: string
+  responseAffirmation: string
+  userInstruction: string
+}
+
+export class ShortTermMemory {
   private memory: MemoryEntry[] = []
 
   public tokenizer = mistralTokenizer
@@ -13,7 +21,12 @@ export class ShortTermMemory implements IShortTermMemory {
   public userInstruction = ""
 
   constructor(params?: Partial<ShortTermMemoryParams>) {
-    Object.assign(this, params)
+    if (!params) return
+    setParams(params, this)
+  }
+
+  public setParams(params: Partial<ShortTermMemoryParams>) {
+    setParams(params, this)
   }
 
   public push(entry: MemoryEntry): void {
@@ -21,7 +34,7 @@ export class ShortTermMemory implements IShortTermMemory {
     this.popLeftIfMemoryOverflow()
   }
 
-  public get dump(): MemoryDump {
+  public get dump() {
     return {
       conversation: this.memory.slice(),
       systemPrompt: this.systemPrompt,
@@ -55,9 +68,5 @@ export class ShortTermMemory implements IShortTermMemory {
     const aiReplies = this.memory.filter(x => x.role === "ai")
     const avg = aiReplies.reduce((acc, x) => acc + this.tokenizer(x.input), 0)
     return Math.ceil(avg / aiReplies.length)
-  }
-
-  public setParams(params?: Partial<ShortTermMemoryParams>) {
-    Object.assign(this, params)
   }
 }

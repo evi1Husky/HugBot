@@ -1,10 +1,11 @@
-import { HugBot } from "./HugBot"
-import { PromptConstructor } from "./PromptConstructor"
-import { HuggingFaceTextGenClient } from "./HuggingFaceTextGenClient"
-import { AIClientMock } from "./AIClientMock"
-import { ShortTermMemory } from "./ShortTermMemory"
-import { IHugBot, IAIClient, IShortTermMemory, IPromptConstructor ,
-HugBotParams } from "./typings"
+import { HugBot } from "./HugBot/HugBot"
+import { PromptConstructor } from "./components/PromptConstructor/PromptConstructor"
+import { HuggingFaceTextGenClient } from "./components/AIClient/HuggingFaceTextGenClient"
+import { AIClientMock } from "./components/AIClient/AIClientMock"
+import { ShortTermMemory } from "./components/ShortTermMemory/ShortTermMemory"
+import { setParams } from "./utility/inputValidation"
+import { IAIClient, IShortTermMemory, IPromptConstructor ,
+HugBotParams } from "./HugBot/typings"
 
 export { HugBot, PromptConstructor, HuggingFaceTextGenClient, 
 AIClientMock, ShortTermMemory }
@@ -12,7 +13,7 @@ AIClientMock, ShortTermMemory }
 /**
  * Chat bot using HuggingFace Inference API Nous-Hermes-2-Mixtral-8x7B-DPO model.
  */
-export const Hermes = (): IHugBot => {
+export const Hermes = () => {
   return new HugBot({
     AIClient: new HuggingFaceTextGenClient({
       languageModel: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
@@ -33,7 +34,7 @@ export const Hermes = (): IHugBot => {
 /**
  * Chat bot using HuggingFace Inference API Zephyr-7b-beta model.
  */
-export const Zephyr = (): IHugBot => {
+export const Zephyr = () => {
   return new HugBot({
     AIClient: new HuggingFaceTextGenClient({
       languageModel: "HuggingFaceH4/zephyr-7b-beta",
@@ -47,7 +48,7 @@ export const Zephyr = (): IHugBot => {
 /**
  * Chat bot using HuggingFace Inference API TinyLlama-1.1B-Chat-v1.0 model.
  */
-export const TinyLlama = (): IHugBot => {
+export const TinyLlama = () => {
   return new HugBot({
     AIClient: new HuggingFaceTextGenClient({
       languageModel: "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
@@ -66,7 +67,7 @@ export const TinyLlama = (): IHugBot => {
 /**
  * Programming helper bot using HuggingFace Inference API HuggingFaceH4/starchat-beta.
  */
-export const StarCoder = (): IHugBot => {
+export const StarCoder = () => {
   return new HugBot({
     AIClient: new HuggingFaceTextGenClient({
       languageModel: "HuggingFaceH4/starchat-beta",
@@ -90,50 +91,40 @@ export const StarCoder = (): IHugBot => {
   })
 }
 
-const hugBot = (name: string) => {
+export const hugBot = (name?: string) => {
   const hugBot = new HugBot()
 
-  const aiClient = (client: IAIClient) => {
+  const withAiClient = (client: IAIClient) => {
     hugBot.setParams({AIClient: client})
     return options
   }
 
-  const shortTermMemory = (shortTermMemory: IShortTermMemory) => {
+  const withShortTermMemory = (shortTermMemory: IShortTermMemory) => {
     hugBot.setParams({shortTermMemory: shortTermMemory})
     return options
   }
 
-  const promptConstructor = (promptConstructor: IPromptConstructor) => {
+  const withPromptConstructor = (promptConstructor: IPromptConstructor) => {
     hugBot.setParams({promptConstructor: promptConstructor})
     return options
   }
 
   const withParams = (params: Partial<HugBotParams>) => {
-    console.log(params)
-    return options
+    setParams(params, hugBot)
+    return { build }
   }
 
-  const uses = () => components
-  
   const build = () => hugBot
 
-  const components = {
-    aiClient,
-    shortTermMemory,
-    promptConstructor
-  }
-
   const options = {
-    build,
+    withAiClient,
+    withShortTermMemory,
+    withPromptConstructor,
     withParams,
-    uses
+    build,
   }
 
   return options
 }
 
-const bot = hugBot("Zephyr").uses().aiClient(new AIClientMock)
-  .withParams({ contextWindow: 300, topP: 50 }).build()
-
-bot.respondTo("hi").then((r) => console.log(r))
 

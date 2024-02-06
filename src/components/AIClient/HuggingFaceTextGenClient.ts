@@ -1,7 +1,8 @@
-import { IAIClient, IHuggingFaceTextGenParams, InferenceAPITextGenResponse } 
-from "./typings"
 
-export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenParams {
+import { setParams } from "../../utility/inputValidation"
+import { HuggingFaceTextGenParams, InferenceAPITextGenResponse } from "./typings"
+
+export class HuggingFaceTextGenClient {
   public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"
   public endPoint = "https://api-inference.huggingface.co/models/"
 
@@ -19,12 +20,13 @@ export class HuggingFaceTextGenClient implements IAIClient, IHuggingFaceTextGenP
   public waitForModel = true
   public useCache = true
 
-  constructor(params?: Partial<IHuggingFaceTextGenParams>) {
-    Object.assign(this, params)
+  constructor(params?: Partial<HuggingFaceTextGenParams>) {
+    if (!params) return
+    setParams(params, this)
   }
 
-  public setParams(params?: Partial<IHuggingFaceTextGenParams>) {
-    Object.assign(this, params)
+  public setParams(params: Partial<HuggingFaceTextGenParams>) {
+    setParams(params, this)
   }
 
   private makePayload(conversation: string, apiToken?: string) {

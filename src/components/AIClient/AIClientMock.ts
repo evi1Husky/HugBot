@@ -1,6 +1,4 @@
-import { IAIClient, IHuggingFaceTextGenParams } from "./typings"
-
-export class AIClientMock implements IAIClient {
+export class AIClientMock {
   private BOT_REPLIES: string[] = [
     "Whoa, neat idea! Let me see if I find anything interesting...",
     "Hey, nice one! Do you have any theories on that?",

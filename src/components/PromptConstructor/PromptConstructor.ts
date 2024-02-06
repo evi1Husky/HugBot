@@ -1,8 +1,13 @@
-import { PromptTags, IPromptConstructor, IPromptConstructorParams, MemoryDump,
-MemoryEntry }
-from "./typings"
+import { PromptTags } from "../../HugBot/typings"
+import { setParams } from "../../utility/inputValidation"
+import { MemoryDump } from "../../HugBot/typings"
+import { MemoryEntry } from "../../HugBot/typings"
 
-export class PromptConstructor implements IPromptConstructor, IPromptConstructorParams {
+export type PromptConstructorParams = {
+  tags: PromptTags
+}
+
+export class PromptConstructor {
   public tags: PromptTags = {
     system: "<|im_start|>system\n",
     user: "<|im_start|>user\n",
@@ -10,12 +15,13 @@ export class PromptConstructor implements IPromptConstructor, IPromptConstructor
     closing: "<|im_end|>\n",
   }
 
-  constructor(params?: Partial<IPromptConstructorParams>) {
-    Object.assign(this, params)
+  constructor(params?: Partial<PromptConstructorParams>) {
+    if (!params) return
+    setParams(params, this)
   }
 
-  public setParams(params?: Partial<IPromptConstructorParams>) {
-    Object.assign(this, params)
+  public setParams(params: Partial<PromptConstructorParams>) {
+    setParams(params, this)
   }
 
   public getPromptTemplate(memoryDump: MemoryDump) {
