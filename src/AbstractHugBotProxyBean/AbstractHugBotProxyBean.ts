@@ -1,6 +1,12 @@
-import { AIClientMock, HugBot, PromptConstructor, ShortTermMemory } from "../botFactory/botFactory"
-import { HugBotParams } from "../HugBot/typings"
-import { filterValidParams } from "./inputValidation"
+import { AIClientMock, HugBot, PromptConstructor, ShortTermMemory 
+} from "../botFactory/botFactory"
+import { filterDisallowedParams, getObjectProps } from "./gettersAndSetters"
+import { Params } from "./typings"
+
+const disallowedParams = new Set([
+  "AIClient", "shortTermMemory", "promptConstructor",
+  "languageModel", "endPoint", "tokenizer", "tags",
+  "returnFullText", "truncate", "useCache",])
 
 export const hugBot = (bot: HugBot) => {
   const HugBot = bot
@@ -9,43 +15,24 @@ export const hugBot = (bot: HugBot) => {
     return HugBot.respondTo(userInput, apiToken)
   }
 
-  const setParams = (params: Partial<HugBotParams>) => {
-    const validParams = filterValidParams(params)
-    console.log(validParams)
-    HugBot.setParams(params)
+  const setParams = (params: Partial<Params>) => {
+    HugBot.setParams(filterDisallowedParams(params, disallowedParams))
+    return { respondTo, setParams, getParams }
   }
 
-  return { respondTo, setParams }
+  const getParams = (params: string[]) => getObjectProps(params, HugBot)
+
+  return { respondTo, setParams, getParams }
 }
 
-const bot = hugBot(new HugBot({AIClient: new AIClientMock}))
-bot.setParams({
-  AIClient: new AIClientMock,
-  shortTermMemory: new ShortTermMemory,
-  promptConstructor: new PromptConstructor,
-  languageModel: "sadasd",
-  systemPrompt: "asdasdas",
-  responseAffirmation: "1321",
-  userInstruction: "31212",
-  endPoint: "213111",
-  contextWindow: 700,
-  tokenizer: (text: string) => 1,
-  tags: {
-    user: "aa",
-    system: "aaa",
-    bot: "aa",
-    closing: "ss"
-  },
-  topK: 3,
-  topP: 2,
-  temperature: 0.2,
-  repetitionPenalty: 1,
-  maxNewTokens: 200,
-  maxTime: 20,
-  returnFullText: false,
-  numReturnSequences: 1,
-  doSample: true,
-  truncate: undefined,
-  waitForModel: false,
-  useCache: false})
-// bot.respondTo("hi").then(x => console.log(x))
+(async () => {
+  const bot = hugBot(new HugBot({AIClient: new AIClientMock}))
+  bot.setParams({contextWindow: 90000})
+  await bot.respondTo("hi").then(x => console.log(x))
+  const params = bot.getParams(["memory"])
+  console.log(params)
+})();
+
+
+
+

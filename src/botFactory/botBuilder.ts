@@ -1,5 +1,5 @@
 import { HugBot } from "../HugBot/HugBot"
-import { setParams } from "../AbstractHugBotProxyBean/inputValidation"
+import { setParams } from "../AbstractHugBotProxyBean/gettersAndSetters"
 import { IAIClient, IShortTermMemory, IPromptConstructor ,
 HugBotParams, HugBotDependencies } from "../HugBot/typings"
 

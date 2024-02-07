@@ -1,5 +1,5 @@
 
-import { setParams } from "../../AbstractHugBotProxyBean/inputValidation"
+import { setParams } from "../../AbstractHugBotProxyBean/gettersAndSetters"
 import { HuggingFaceTextGenParams, InferenceAPITextGenResponse } from "./typings"
 import { IAIClient } from "../../HugBot/typings"
 

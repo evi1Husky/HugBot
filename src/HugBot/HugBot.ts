@@ -1,7 +1,7 @@
 import { HuggingFaceTextGenClient } from "../components/AIClient/HuggingFaceTextGenClient"
 import { PromptConstructor } from "../components/PromptConstructor/PromptConstructor"
 import { ShortTermMemory } from "../components/ShortTermMemory/ShortTermMemory"
-import { setParams } from "../AbstractHugBotProxyBean/inputValidation"
+import { setParams } from "../AbstractHugBotProxyBean/gettersAndSetters"
 import { IAIClient, IPromptConstructor, IShortTermMemory, 
 HugBotDependencies, HugBotParams } from "./typings"
 
