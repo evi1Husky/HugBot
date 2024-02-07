@@ -1,8 +1,9 @@
 
-import { setParams } from "../../utility/inputValidation"
+import { setParams } from "../../AbstractHugBotProxyBean/inputValidation"
 import { HuggingFaceTextGenParams, InferenceAPITextGenResponse } from "./typings"
+import { IAIClient } from "../../HugBot/typings"
 
-export class HuggingFaceTextGenClient {
+export class HuggingFaceTextGenClient implements IAIClient {
   public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"
   public endPoint = "https://api-inference.huggingface.co/models/"
 

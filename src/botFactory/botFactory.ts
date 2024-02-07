@@ -1,17 +1,17 @@
-import { HugBot } from "./HugBot/HugBot"
-import { PromptConstructor } from "./components/PromptConstructor/PromptConstructor"
-import { HuggingFaceTextGenClient } from "./components/AIClient/HuggingFaceTextGenClient"
-import { AIClientMock } from "./components/AIClient/AIClientMock"
-import { ShortTermMemory } from "./components/ShortTermMemory/ShortTermMemory"
-import { BotStorage } from "./utility/botStorage"
-import { buildHugBot } from "./utility/botBuilder"
+import { HugBot } from "../HugBot/HugBot"
+import { PromptConstructor } from "../components/PromptConstructor/PromptConstructor"
+import { HuggingFaceTextGenClient } from "../components/AIClient/HuggingFaceTextGenClient"
+import { AIClientMock } from "../components/AIClient/AIClientMock"
+import { ShortTermMemory } from "../components/ShortTermMemory/ShortTermMemory"
+import { BotStorage } from "./botStorage"
+import { buildHugBot } from "./botBuilder"
 
 export { buildHugBot, BotStorage, HugBot, PromptConstructor, HuggingFaceTextGenClient, 
 AIClientMock, ShortTermMemory }
 
 export const botStorage = BotStorage()
   .set("Zephyr", buildHugBot("Zephyr")
-  .withAiClient(new HuggingFaceTextGenClient)
+  .withAiClient(HuggingFaceTextGenClient)
   .withParams({
     languageModel: "HuggingFaceH4/zephyr-7b-beta",
     temperature: 0.6,
@@ -22,7 +22,7 @@ export const botStorage = BotStorage()
       closing: "</s>\n",
     }}).build)
   .set("Hermes", buildHugBot("Hermes")
-  .withAiClient(new HuggingFaceTextGenClient)
+  .withAiClient(HuggingFaceTextGenClient)
   .withParams({
     languageModel: "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
     temperature: 0.9,
@@ -33,7 +33,7 @@ export const botStorage = BotStorage()
       closing: "<|im_end|>\n",
     }}).build)
   .set("TinyLlama", buildHugBot("TinyLlama")
-  .withAiClient(new HuggingFaceTextGenClient)
+  .withAiClient(HuggingFaceTextGenClient)
   .withParams({
     languageModel: "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
     temperature: 0.5,
@@ -48,7 +48,7 @@ export const botStorage = BotStorage()
       closing: "</s>\n",
     }}).build)
   .set("StarCoder", buildHugBot("StarCoder")
-  .withAiClient(new HuggingFaceTextGenClient)
+  .withAiClient(HuggingFaceTextGenClient)
   .withParams({
     languageModel: "HuggingFaceH4/starchat-beta",
     topK: 50,
@@ -64,4 +64,4 @@ export const botStorage = BotStorage()
       closing: "<|end|>\n",
     }}).build)
   .set("TestBot", 
-  buildHugBot("TestBot").withAiClient(new AIClientMock).build)
+  buildHugBot("TestBot").withAiClient(AIClientMock).build)

@@ -1,5 +1,5 @@
-import { mistralTokenizer } from "../../utility/Tokenizers";
-import { setParams } from "../../utility/inputValidation"
+import { mistralTokenizer } from "../../nlp/Tokenizers";
+import { setParams } from "../../AbstractHugBotProxyBean/inputValidation"
 import { MemoryEntry } from "../../HugBot/typings"
 
 export type ShortTermMemoryParams = {

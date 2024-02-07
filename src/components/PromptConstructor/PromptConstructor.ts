@@ -1,5 +1,5 @@
 import { PromptTags } from "../../HugBot/typings"
-import { setParams } from "../../utility/inputValidation"
+import { setParams } from "../../AbstractHugBotProxyBean/inputValidation"
 import { MemoryDump } from "../../HugBot/typings"
 import { MemoryEntry } from "../../HugBot/typings"
 

@@ -1,8 +1,8 @@
 import { HuggingFaceTextGenClient } from "../components/AIClient/HuggingFaceTextGenClient"
 import { PromptConstructor } from "../components/PromptConstructor/PromptConstructor"
 import { ShortTermMemory } from "../components/ShortTermMemory/ShortTermMemory"
-import { setParams } from "../utility/inputValidation"
-import {IAIClient, IPromptConstructor, IShortTermMemory, 
+import { setParams } from "../AbstractHugBotProxyBean/inputValidation"
+import { IAIClient, IPromptConstructor, IShortTermMemory, 
 HugBotDependencies, HugBotParams } from "./typings"
 
 export class HugBot {
