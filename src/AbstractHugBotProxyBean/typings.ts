@@ -1,3 +1,13 @@
+export type HugBot = {
+  respondTo: (userInput: string, apiToken?: string | undefined) => Promise<string>,
+  setParams: (params: Partial<Params>) => {
+    respondTo: (userInput: string, apiToken?: string | undefined) => Promise<string>,
+    setParams: (params: Partial<Params>) => HugBot,
+    getParams: (params: string[]) => Record<string, unknown>,
+  },
+  getParams: (params: string[]) => Record<string, unknown>
+}
+
 export type Params = {
   systemPrompt: string
   responseAffirmation: string

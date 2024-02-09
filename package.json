@@ -3,7 +3,7 @@
   "version": "1.4.2",
   "description": "Chatbot agent for HuggingFace Inference API text generation models.",
   "main": "dist/botFactory/botFactory.js",
-  "types": "dist/typings.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {},
   "keywords": [
     "LLM",

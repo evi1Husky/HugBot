@@ -1,6 +1,6 @@
-import { mistralTokenizer } from "../../nlp/Tokenizers";
-import { setParams } from "../../AbstractHugBotProxyBean/gettersAndSetters"
-import { MemoryEntry } from "../../HugBot/typings"
+import { mistralTokenizer } from "../../systems/tokenizers/Tokenizers";
+import { setParams } from "../../systems/gettersAndSetters"
+import { MemoryEntry } from "../../HugBotEntity/HugBotEntity"
 
 export type ShortTermMemoryParams = {
   tokenizer: (text: string) => number

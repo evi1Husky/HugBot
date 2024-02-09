@@ -1,40 +1,35 @@
-import { HugBot } from "../HugBot/HugBot"
-import { setParams } from "../AbstractHugBotProxyBean/gettersAndSetters"
-import { IAIClient, IShortTermMemory, IPromptConstructor ,
-HugBotParams, HugBotDependencies } from "../HugBot/typings"
+import { setParams } from "../systems/gettersAndSetters"
+import { HugBotEntity, HugBotParams, HugBotComponentsConstructors, 
+HugBotComponents, HugBotSystems }
+from "../HugBotEntity/HugBotEntity"
 
-export const buildHugBot = (name?: string) => {
-  const hugBot = new HugBot() 
+export const buildHugBot = (id: string) => {
+  const botComponents: Partial<HugBotComponents> = {}
+  const botSystems: Partial<HugBotSystems> = {}
 
-  const withAiClient = (client: new () => IAIClient) => {
-    hugBot.setParams({AIClient: new client})
-    return options
+  const fromComponents = (components: HugBotComponentsConstructors) => {
+    Object.entries(components).forEach(([key, value]) => 
+      Object.assign(botComponents, {[key]: new value}))
+    return { andSystems, withParams, build }
   }
 
-  const withShortTermMemory = (shortTermMemory: new () => IShortTermMemory) => {
-    hugBot.setParams({shortTermMemory: new shortTermMemory})
-    return options
-  }
-
-  const withPromptConstructor = (promptConstructor: new () => IPromptConstructor) => {
-    hugBot.setParams({promptConstructor: new promptConstructor})
-    return options
+  const andSystems = (systems: Partial<HugBotSystems>) => {
+    Object.assign(botSystems, { ...systems })
+    return { withParams, build }
   }
 
   const withParams = (params: Partial<HugBotParams>) => {
-    setParams(params, hugBot)
+    setParams(params, botComponents)
     return { build }
   }
 
-  const build = (): HugBot => hugBot
+  const makeCleanObject = (): object => 
+    JSON.parse(JSON.stringify(Object.create(null)))
 
-  const options = {
-    withAiClient,
-    withShortTermMemory,
-    withPromptConstructor,
-    withParams,
-    build,
+  const build = (): HugBotEntity => {
+    return Object.assign(makeCleanObject(), 
+      {id: id}, botComponents, botSystems)
   }
 
-  return options
+  return { fromComponents }
 }

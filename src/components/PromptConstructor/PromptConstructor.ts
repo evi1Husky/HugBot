@@ -1,7 +1,5 @@
-import { PromptTags } from "../../HugBot/typings"
-import { setParams } from "../../AbstractHugBotProxyBean/gettersAndSetters"
-import { MemoryDump } from "../../HugBot/typings"
-import { MemoryEntry } from "../../HugBot/typings"
+import { PromptTags, MemoryDump, MemoryEntry } from "../../HugBotEntity/HugBotEntity"
+import { setParams } from "../../systems/gettersAndSetters"
 
 export type PromptConstructorParams = {
   tags: PromptTags

@@ -10,9 +10,7 @@ export const setParams = <T>(params: Record<string, T>, obj: Record<string, any>
 export const getObjectProps = <T>(props: string[], obj: object, 
   acc: Record<string, T> = {}): Record<string, T> => {
   Object.entries(obj).forEach(([key, value]) => {
-    if (props.includes("all"))
-      Object.assign(acc, {[key]: value})
-    else if (props.includes(key))
+    if (props.includes(key))
       Object.assign(acc, {[key]: value})
     if (typeof value === "object")
       getObjectProps(props, value, acc) 

@@ -1,7 +1,7 @@
 
-import { setParams } from "../../AbstractHugBotProxyBean/gettersAndSetters"
+import { setParams } from "../../systems/gettersAndSetters"
 import { HuggingFaceTextGenParams, InferenceAPITextGenResponse } from "./typings"
-import { IAIClient } from "../../HugBot/typings"
+import { IAIClient } from "../../HugBotEntity/HugBotEntity"
 
 export class HuggingFaceTextGenClient implements IAIClient {
   public languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO"

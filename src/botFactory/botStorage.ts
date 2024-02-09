@@ -1,27 +1,20 @@
-import { HugBot } from "./botFactory"
+import { hugbot } from "../AbstractHugBotProxyBean/typings"
 
 export const BotStorage = () => {
-  const store: Record<string, () => HugBot> = {}
+  const store: Record<string, () => hugbot> = {}
 
-  const set = (key: string, val: () => HugBot) => {
-    store[key] = val
+  const set = (key: string, val: () => hugbot) => {
+    Object.assign(store, {[key]: val})
     return options
   }
 
-  const get = (key: string): HugBot => store[key]()
-
-  const getAll = () => store
-
+  const get = (key: string) => store[key]()
+  
   const remove = (key: string) => {
     delete store[key]
     return options
   }
 
-  const clear = () => {
-    Object.keys(store).forEach(key => delete store[key])
-    return options
-  }
-
-  const options = {set, get, remove, getAll, clear}
+  const options = { set, get, remove }
   return options
 }
