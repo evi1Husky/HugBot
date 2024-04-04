@@ -1,7 +1,7 @@
 {
   "name": "hugbot",
   "version": "1.4.2",
-  "description": "Chatbot agent for HuggingFace Inference API text generation models.",
+  "description": "Chatbot agent for HuggingFace Inference API text generation models and other AI providers.",
   "main": "dist/botFactory/botFactory.js",
   "types": "dist/index.d.ts",
   "scripts": {},
@@ -24,9 +24,9 @@
   },
   "type": "module",
   "dependencies": {
-    "mistral-tokenizer-ts": "^1.1.0"
+    "mistral-tokenizer-ts": "^1.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   }
 }

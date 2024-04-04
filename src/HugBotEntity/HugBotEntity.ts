@@ -1,77 +1,114 @@
+import { setParams } from "../systems/gettersAndSetters"
+import { HugBotProxy } from "./AbstractSingletonProxyFactoryBean";
+
+export const BuildHugBot = (id: string) => {
+  const bot: HugBot = Object.create(null);
+  Object.defineProperty(bot, "id",
+    { value: id, enumerable: true, writable: true, configurable: true });
+
+  const fromComponents = (components: Partial<HugBotComponentConstructors>) => {
+    Object.entries(components).forEach(([name, component]) =>
+      Object.defineProperty(bot, name,
+        { value: new component(), enumerable: true, writable: true, configurable: true }));
+    return { andSystems, withParams, build }
+  }
+
+  const andSystems = (systems: Partial<HugBotSystems>) => {
+    Object.entries(systems).forEach(([name, system]) =>
+      Object.defineProperty(bot, name,
+        { value: system, enumerable: true, writable: true, configurable: true }));
+    return { withParams, build }
+  }
+
+  const withParams = (params: Partial<HugBotParams>) => {
+    setParams(params, bot);
+    return { build }
+  }
+
+  const build = (): HugBot => HugBotProxy(bot);
+
+  return { fromComponents }
+}
+
+export type HugBot = {
+  id: string;
+  respondTo: (userInput: string, apiToken?: string) => Promise<string>;
+  setParams: (params: Partial<HugBotParams>) => void;
+}
+
 export type HugBotEntity = {
-  id: string
-  AIClient?: IAIClient
-  shortTermMemory?: IShortTermMemory
-  promptConstructor?: IPromptConstructor
-  respondTo?: (HugBot: HugBotEntity, 
-    userInput: string, apiToken?: string) => Promise<string>
+  id: string;
+  AIClient?: AIClient;
+  shortTermMemory?: ShortTermMemory;
+  promptConstructor?: PromptConstructor;
+  respondTo?: (userInput: string, apiToken?: string) => Promise<string>;
 }
 
-export type HugBotComponents = {
-  AIClient: IAIClient
-  shortTermMemory: IShortTermMemory
-  promptConstructor: IPromptConstructor
+type HugBotComponents = {
+  AIClient: AIClient;
+  shortTermMemory: ShortTermMemory;
+  promptConstructor: PromptConstructor;
 }
 
-export type HugBotSystems = {
-  respondTo: (HugBot: HugBotEntity, 
-    userInput: string, apiToken?: string) => Promise<string>
+type HugBotSystems = {
+  respondTo: (userInput: string, apiToken?: string) => Promise<string>;
 }
 
-export type HugBotComponentsConstructors = 
-  Partial<{ [Key in keyof HugBotComponents]: new () => HugBotComponents[Key] }>
+type HugBotComponentConstructors = {
+  [Key in keyof HugBotComponents]: new () => HugBotComponents[Key]
+};
 
 export type HugBotParams = {
-  languageModel: string
-  systemPrompt: string
-  responseAffirmation: string
-  userInstruction: string
-  endPoint: string
-  contextWindow: number
-  tokenizer: (text: string) => number
-  tags: PromptTags
-  topK: number | undefined
-  topP: number | undefined
-  temperature: number
-  repetitionPenalty: number | undefined
-  maxNewTokens: number | undefined
-  maxTime: number | undefined
-  returnFullText: boolean
-  numReturnSequences: number
-  doSample: boolean
-  truncate: number | undefined
-  waitForModel: boolean
-  useCache: boolean
+  language_model: string;
+  systemPrompt: string;
+  responseAffirmation: string;
+  userInstruction: string;
+  contextWindow: number;
+  tokenizer: (text: string) => number;
+  tags: PromptTags;
+  top_k: number | undefined;
+  top_p: number | undefined;
+  temperature: number;
+  repetition_penalty: number | undefined;
+  max_new_tokens: number | undefined;
+  max_time: number | undefined;
+  return_full_text: boolean;
+  num_return_sequences: number;
+  do_sample: boolean;
+  truncate: number | undefined;
+  wait_for_model: boolean;
+  use_cache: boolean;
 }
 
-export interface IAIClient {
-  sendRequest: (consversation: string, apiToken?: string) => Promise<string>
+interface AIClient {
+  sendRequest: (prompt: string, apiToken?: string) => Promise<string>;
 }
 
-export interface IPromptConstructor {
-  getPromptTemplate: (memoryDump: MemoryDump) => string
+interface PromptConstructor {
+  getPromptTemplate: (memoryDump: MemoryDump) => string;
 }
 
-export interface IShortTermMemory {
-  push: (entry: MemoryEntry) => void
-  get dump(): MemoryDump
+interface ShortTermMemory {
+  push: (entry: MemoryEntry) => void;
+  get dump(): MemoryDump;
 }
 
-export type MemoryEntry = {
-  role: "user" | "ai"
-  input: string
+type MemoryEntry = {
+  role: "user" | "ai";
+  input: string;
 }
 
-export type MemoryDump = {
-  conversation: MemoryEntry[]
-  systemPrompt: string
-  responseAffirmation: string
-  userInstruction: string
+type MemoryDump = {
+  conversation: MemoryEntry[];
+  systemPrompt: string;
+  responseAffirmation: string;
+  userInstruction: string;
 }
 
-export type PromptTags = {
-  system: string
-  user: string
-  bot: string
-  closing: string
+type PromptTags = {
+  system: string;
+  user: string;
+  bot: string;
+  closing: string;
 }
+
