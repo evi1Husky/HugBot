@@ -1,13 +1,21 @@
 import { mistralTokenizer } from "../../systems/tokenizers/Tokenizers";
 
+/** 
+ * Conversation memory buffer with token counter for managing limited context window lengths.
+ * @method {push} - Adds entries to memory buffer.
+ * @method {dump} - Retrieves current memory state including system prompt and response instructions.
+ * @property {contextWindow} - Buffer length can be adjusted with contextWindow property.
+ * @property {systemPrompt} {responseAffirmation} {userInstruction} - Stores current system prompt and other AI prompt template elements.
+ * @property {tokenizer} - Tokenizer function used to calculate ammount of tokens across all memory entries.
+ */
 export class ShortTermMemory {
   #memory: MemoryEntry[] = [];
-  private tokenizer = mistralTokenizer;
 
-  public contextWindow = 4096;
-  public systemPrompt = "You are a helpful AI assistant.";
-  public responseAffirmation = "";
-  public userInstruction = "";
+  tokenizer = mistralTokenizer;
+  contextWindow = 4096;
+  systemPrompt = "You are a helpful AI assistant.";
+  responseAffirmation = "";
+  userInstruction = "";
 
   constructor(params?: Partial<ShortTermMemoryParams>) {
     if (params)

@@ -7,7 +7,7 @@ export class PromptConstructor {
   }) { }
 
   public getPromptTemplate(memoryDump: MemoryDump): string {
-    const conv = PromptConstructor.#copyConversation(memoryDump.conversation);
+    const conv = JSON.parse(JSON.stringify(memoryDump.conversation));
     conv[conv.length - 1].input = PromptConstructor.#addUserInstruction(memoryDump);
     return this.#addSysPrompt(memoryDump.systemPrompt) +
       this.#buildConversation(conv) +
@@ -19,7 +19,7 @@ export class PromptConstructor {
       return x.role === 'user' ?
         this.#addUserEntry(x.input) : this.#addAIentry(x.input);
     }).join('');
-  }
+  } 
 
   #addUserEntry(input: string) {
     return `${this.tags.user}${input}${this.tags.closing}`;
@@ -40,11 +40,7 @@ export class PromptConstructor {
   static #addUserInstruction(memoryDump: MemoryDump) {
     const input = memoryDump.conversation[memoryDump.conversation.length - 1].input;
     return memoryDump.userInstruction ?
-      `${input}\n---\n${memoryDump.userInstruction}` : `${input}`;
-  }
-
-  static #copyConversation(conv: MemoryEntry[]): MemoryEntry[] {
-    return JSON.parse(JSON.stringify(conv));
+      `${input} ${memoryDump.userInstruction}` : `${input}`;
   }
 }
 

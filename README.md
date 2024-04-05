@@ -1,6 +1,6 @@
 # HugBot 🤖
 
-Chatbot agent for HuggingFace 🤗 Inference API text generation models.
+Chatbot agent for HuggingFace 🤗 Inference API text generation models and other AI API providers.
 
 ## Features
 
@@ -29,11 +29,11 @@ npm i hugbot
 ```typescript
 import { botStorage } from "hugbot"
 
-const zephyr = botStorage.get("Zephyr")
-const response = await zephyr.respondTo("Hi!")
+const zephyr = botStorage.get("Zephyr");
+const response = await zephyr.respondTo("Hi!");
 // respondTo returns a Promise with with generated AI response string.
 // Optionally use an api token:
-const response = await zephyr.respondTo("Hi!", apiToken)
+const response = await zephyr.respondTo("Hi!", apiToken);
 ```
 
 ## Build your own HugBot
@@ -57,9 +57,9 @@ const hermes = buildHugBot("Hermes")
       user: "<|im_start|>user\n",
       bot: "<|im_start|>assistant\n",
       closing: "<|im_end|>\n",
-    }}).build()
+    }}).build();
 
-hermes.respondTo("Hi!").then((response) => console.log(response))
+hermes.respondTo("Hi!").then((response) => console.log(response));
 ```
 
 ## params
@@ -70,14 +70,13 @@ All available params:
 
 ```typescript
 type HugBotParams = {
-  AIClient: IAIClient
-  shortTermMemory: IShortTermMemory
-  promptConstructor: IPromptConstructor
+  AIClient: IAIClient // AI API provider client such us Hugging Face Inference API
+  shortTermMemory: IShortTermMemory // conversation memory buffer 
+  promptConstructor: IPromptConstructor // prompt formatting module
   languageModel: string // link to language model for ai client
   systemPrompt: string
   responseAffirmation: string // prepended befor every bot reply
   userInstruction: string // automatically add user instruction to every prompt
-  endPoint: string
   contextWindow: number // chatbot conversation memory buffer size
   tokenizer: (text: string) => number // tokenizer function used to calculate 
   // ammount of tokens in conversation buffer to prevent overflow

@@ -21,13 +21,13 @@ export class HuggingFaceTextGenClient {
   language_model = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
   top_k = undefined;
   top_p = undefined;
-  temperature = 0.9;
+  temperature = 0.7;
   repetition_penalty = 1.1;
-  max_new_tokens = 51;
+  max_new_tokens = 512;
   max_time = 30;
   return_full_text = false;
   num_return_sequences = 1;
-  do_sample = true;
+  do_sample = false;
   truncate = undefined;
   wait_for_model = true;
   use_cache = true;
@@ -88,6 +88,7 @@ export class HuggingFaceTextGenClient {
 }
 
 type HuggingFaceTextGenParams = {
+  language_model: string;
   top_k: number | undefined;
   top_p: number | undefined;
   temperature: number;

@@ -1,4 +1,3 @@
-import { setParams } from "../systems/gettersAndSetters"
 import { HugBotProxy } from "./AbstractSingletonProxyFactoryBean";
 
 export const BuildHugBot = (id: string) => {
@@ -6,22 +5,17 @@ export const BuildHugBot = (id: string) => {
   Object.defineProperty(bot, "id",
     { value: id, enumerable: true, writable: true, configurable: true });
 
-  const fromComponents = (components: Partial<HugBotComponentConstructors>) => {
+  const fromComponents = (components: Partial<HugBotComponents>) => {
     Object.entries(components).forEach(([name, component]) =>
       Object.defineProperty(bot, name,
-        { value: new component(), enumerable: true, writable: true, configurable: true }));
-    return { andSystems, withParams, build }
+        { value: component, enumerable: true, writable: true, configurable: true }));
+    return { andSystems, build }
   }
 
   const andSystems = (systems: Partial<HugBotSystems>) => {
     Object.entries(systems).forEach(([name, system]) =>
       Object.defineProperty(bot, name,
         { value: system, enumerable: true, writable: true, configurable: true }));
-    return { withParams, build }
-  }
-
-  const withParams = (params: Partial<HugBotParams>) => {
-    setParams(params, bot);
     return { build }
   }
 
@@ -53,10 +47,6 @@ type HugBotComponents = {
 type HugBotSystems = {
   respondTo: (userInput: string, apiToken?: string) => Promise<string>;
 }
-
-type HugBotComponentConstructors = {
-  [Key in keyof HugBotComponents]: new () => HugBotComponents[Key]
-};
 
 export type HugBotParams = {
   language_model: string;
