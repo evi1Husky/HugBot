@@ -10,11 +10,7 @@ export const HugBotProxy = (bot: HugBotEntity) => {
         }
       } else if (key === "setParams") {
         return (params: Partial<HugBotParams>): void => {
-          if (areAllowedParams(params, allowedParams)) {
-            setParams(params, target);
-          } else {
-            throwError("Access denied. Can't assign property.");
-          }
+          setParams(params, target);
         }
       } else if (key === "id") {
         return target[key];
@@ -35,22 +31,5 @@ function throwError(message: string): never {
   throw { message: message, };
 }
 
-const allowedParams = new Set([
-  "systemPrompt",
-  "responseAffirmation",
-  "userInstruction",
-  "contextWindow",
-  "top_k",
-  "top_p",
-  "temperature",
-  "repetition_penalty",
-  "max_new_tokens",
-  "max_time",
-  "return_full_text",
-  "num_return_sequences",
-  "do_sample",
-  "truncate",
-  "wait_for_model",
-  "use_cache",
-]);
+
 

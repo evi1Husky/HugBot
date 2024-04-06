@@ -24,7 +24,7 @@ export const BuildHugBot = (id: string) => {
   return { fromComponents }
 }
 
-export type HugBot = {
+export interface HugBot {
   id: string;
   respondTo: (userInput: string, apiToken?: string) => Promise<string>;
   setParams: (params: Partial<HugBotParams>) => void;
@@ -49,25 +49,22 @@ type HugBotSystems = {
 }
 
 export type HugBotParams = {
-  language_model: string;
   systemPrompt: string;
   responseAffirmation: string;
   userInstruction: string;
   contextWindow: number;
-  tokenizer: (text: string) => number;
-  tags: PromptTags;
-  top_k: number | undefined;
-  top_p: number | undefined;
+  topK: number | undefined;
+  topP: number | undefined;
   temperature: number;
-  repetition_penalty: number | undefined;
-  max_new_tokens: number | undefined;
-  max_time: number | undefined;
-  return_full_text: boolean;
-  num_return_sequences: number;
-  do_sample: boolean;
+  repetitionPenalty: number | undefined;
+  maxNewTokens: number | undefined;
+  maxTime: number | undefined;
+  returnFullText: boolean;
+  numReturnSequences: number;
+  doSample: boolean;
   truncate: number | undefined;
-  wait_for_model: boolean;
-  use_cache: boolean;
+  waitForModel: boolean;
+  useCache: boolean;
 }
 
 interface AIClient {
@@ -93,12 +90,5 @@ type MemoryDump = {
   systemPrompt: string;
   responseAffirmation: string;
   userInstruction: string;
-}
-
-type PromptTags = {
-  system: string;
-  user: string;
-  bot: string;
-  closing: string;
 }
 

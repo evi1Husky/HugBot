@@ -1,20 +1,18 @@
-import { HugBotEntity } from "../HugBotEntity/HugBotEntity"
+import { HugBot } from "../HugBotEntity/HugBotEntity";
+
+type BotsInStorage = "StarChat" | "Zephyr" | "Hermes" | "Mixtral" | "Mistral";
 
 export const BotStorage = () => {
-  const store: Record<string, () => HugBotEntity> = {}
+  const store: Map<string, () => HugBot> = new Map();
 
-  const set = (key: string, val: () => HugBotEntity) => {
-    Object.assign(store, { [key]: val });
-    return options;
+  const put = (id: string, fn: () => HugBot) => {
+    store.set(id, fn);
+    return { put, get };
   }
 
-  const get = (key: string) => store[key]();
+  const get = (id: BotsInStorage) => store.get(id)!();
 
-  const remove = (key: string) => {
-    delete store[key];
-    return options;
-  }
-
-  const options = { set, get, remove }
-  return options;
+  return { put, get };
 }
+
+

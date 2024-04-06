@@ -17,20 +17,20 @@
  * @param use_cache boolean - There is a cache layer on the inference API to speedup requests we have already seen. Most models can use those results as is as models are deterministic (meaning the results will be the same anyway). However if you use a non deterministic model, you can set this parameter to prevent the caching mechanism from being used resulting in a real new query.
  */
 export class HuggingFaceTextGenClient {
-  #END_POINT = "https://api-inference.huggingface.co/models/";
-  language_model = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
-  top_k = undefined;
-  top_p = undefined;
+  endPoint = "https://api-inference.huggingface.co/models/";
+  languageModel = "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO";
+  topK = undefined;
+  topP = undefined;
   temperature = 0.7;
-  repetition_penalty = 1.1;
-  max_new_tokens = 512;
-  max_time = 30;
-  return_full_text = false;
-  num_return_sequences = 1;
-  do_sample = false;
+  repetitionPenalty = 1.1;
+  maxNewTokens = 512;
+  maxTime = 30;
+  returnFullText = false;
+  numReturnSequences = 1;
+  doSample = false;
   truncate = undefined;
-  wait_for_model = true;
-  use_cache = true;
+  waitForModel = true;
+  useCache = true;
 
   constructor(params?: Partial<HuggingFaceTextGenParams>) {
     if (params)
@@ -48,19 +48,19 @@ export class HuggingFaceTextGenClient {
       body: JSON.stringify({
         inputs: prompt,
         options: {
-          wait_for_model: this.wait_for_model,
-          use_cache: this.use_cache,
+          wait_for_model: this.waitForModel,
+          use_cache: this.useCache,
         },
         parameters: {
-          top_k: this.top_k,
-          top_p: this.top_p,
+          top_k: this.topK,
+          top_p: this.topP,
           temperature: this.temperature,
-          repetition_penalty: this.repetition_penalty,
-          max_new_tokens: this.max_new_tokens,
-          max_time: this.max_time,
-          return_full_text: this.return_full_text,
-          num_return_sequences: this.num_return_sequences,
-          do_sample: this.do_sample,
+          repetition_penalty: this.repetitionPenalty,
+          max_new_tokens: this.maxNewTokens,
+          max_time: this.maxTime,
+          return_full_text: this.returnFullText,
+          num_return_sequences: this.numReturnSequences,
+          do_sample: this.doSample,
           truncate: this.truncate,
         },
       }),
@@ -76,7 +76,7 @@ export class HuggingFaceTextGenClient {
   public async sendRequest(prompt: string, apiToken?: string): Promise<string> {
     try {
       const payload = this.#makePayload(prompt, apiToken);
-      const response = await fetch(this.#END_POINT + this.language_model, payload);
+      const response = await fetch(this.endPoint + this.languageModel, payload);
       const generatedText = await response.json();
       if ("error" in generatedText)
         console.error(generatedText.error);
@@ -88,18 +88,19 @@ export class HuggingFaceTextGenClient {
 }
 
 type HuggingFaceTextGenParams = {
-  language_model: string;
-  top_k: number | undefined;
-  top_p: number | undefined;
+  endPoint: string;
+  languageModel: string;
+  topK: number | undefined;
+  topP: number | undefined;
   temperature: number;
-  repetition_penalty: number | undefined;
-  max_new_tokens: number | undefined;
-  max_time: number | undefined;
-  return_full_text: boolean;
-  num_return_sequences: number;
-  do_sample: boolean;
+  repetitionPenalty: number | undefined;
+  maxNewTokens: number | undefined;
+  maxTime: number | undefined;
+  returnFullText: boolean;
+  numReturnSequences: number;
+  doSample: boolean;
   truncate: number | undefined;
-  wait_for_model: boolean;
-  use_cache: boolean;
+  waitForModel: boolean;
+  useCache: boolean;
 }
 
