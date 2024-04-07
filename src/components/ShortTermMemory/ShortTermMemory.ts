@@ -1,4 +1,4 @@
-import { mistralTokenizer } from "../../systems/tokenizers/Tokenizers";
+import { mistralTokenizer } from "../Tokenizers/MistralTokenizer";
 
 /** 
  * Conversation memory buffer with token counter for managing limited context window lengths.

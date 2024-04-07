@@ -9,13 +9,6 @@ export const BuildHugBot = (id: string) => {
     Object.entries(components).forEach(([name, component]) =>
       Object.defineProperty(bot, name,
         { value: component, enumerable: true, writable: true, configurable: true }));
-    return { andSystems, build }
-  }
-
-  const andSystems = (systems: Partial<HugBotSystems>) => {
-    Object.entries(systems).forEach(([name, system]) =>
-      Object.defineProperty(bot, name,
-        { value: system, enumerable: true, writable: true, configurable: true }));
     return { build }
   }
 
@@ -35,17 +28,14 @@ export type HugBotEntity = {
   AIClient?: AIClient;
   shortTermMemory?: ShortTermMemory;
   promptConstructor?: PromptConstructor;
-  respondTo?: (userInput: string, apiToken?: string) => Promise<string>;
+  respondTo?: GenerateResponse;
 }
 
 type HugBotComponents = {
   AIClient: AIClient;
   shortTermMemory: ShortTermMemory;
   promptConstructor: PromptConstructor;
-}
-
-type HugBotSystems = {
-  respondTo: (userInput: string, apiToken?: string) => Promise<string>;
+  respondTo: GenerateResponse;
 }
 
 export type HugBotParams = {
@@ -66,6 +56,8 @@ export type HugBotParams = {
   waitForModel: boolean;
   useCache: boolean;
 }
+
+type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
 
 interface AIClient {
   sendRequest: (prompt: string, apiToken?: string) => Promise<string>;

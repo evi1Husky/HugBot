@@ -18,7 +18,7 @@ export class MistralPromptConstructor {
 
   static #addSysPrompt(sysPrompt: string) {
     if (!sysPrompt.length)
-      return "";
+      return "<s>[INST] ";
     return `<s>[INST] ${sysPrompt}\n`;
   }
 

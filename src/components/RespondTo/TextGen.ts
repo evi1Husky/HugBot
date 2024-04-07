@@ -40,7 +40,6 @@ export async function generateTextResponse(this: HugBotEntity,
   pushToShortTermMemory(this, { role: "user", input: userInput });
   const memoryState = memoryDump(this);
   const promptTemplate = buildPromptTemplate(this, userInput, memoryState);
-  console.log(promptTemplate);
   const response = await sendRequest(this, promptTemplate, apiToken);
   pushToShortTermMemory(this, { role: "ai", input: response });
   return response;

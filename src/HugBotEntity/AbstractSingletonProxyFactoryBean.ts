@@ -1,5 +1,5 @@
 import { HugBot, HugBotEntity, HugBotParams } from "./HugBotEntity"
-import { setParams, areAllowedParams } from "../systems/gettersAndSetters";
+import { setParams } from "./gettersAndSetters";
 
 export const HugBotProxy = (bot: HugBotEntity) => {
   return Object.seal(new Proxy(bot, {

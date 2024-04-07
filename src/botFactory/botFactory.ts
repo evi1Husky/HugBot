@@ -6,14 +6,12 @@ import { ShortTermMemory } from "../components/ShortTermMemory/ShortTermMemory";
 import { BuildHugBot } from "../HugBotEntity/HugBotEntity";
 import { HugBotProxy } from "../HugBotEntity/AbstractSingletonProxyFactoryBean";
 import { BotStorage } from "./botStorage";
-import { generateTextResponse } from "../systems/textGen";
-import { mistralTokenizer } from "../systems/tokenizers/Tokenizers";
-import { setParams } from "../systems/gettersAndSetters";
-import { getParams } from "../systems/gettersAndSetters";
+import { generateTextResponse } from "../components/RespondTo/TextGen";
+import { mistralTokenizer } from "../components/Tokenizers/MistralTokenizer";
 
 export {
-  BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer, setParams,
-  getParams, HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
+  BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer,
+  HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
   MistralPromptConstructor
 }
 
@@ -39,8 +37,7 @@ botStorage.put("StarChat", () => BuildHugBot("StarChat").fromComponents({
     bot: "<|im_start|>assistant\n",
     closing: "<|im_end|>\n",
   }),
-}).andSystems({
-  respondTo: generateTextResponse
+  respondTo: generateTextResponse,
 }).build());
 
 botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
@@ -61,9 +58,8 @@ botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
     user: "<|user|>\n",
     bot: "<|assistant|>\n",
     closing: "</s>\n",
-  })
-}).andSystems({
-  respondTo: generateTextResponse
+  }),
+  respondTo: generateTextResponse,
 }).build());
 
 botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
@@ -84,9 +80,8 @@ botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
     user: "<|im_start|>user\n",
     bot: "<|im_start|>assistant\n",
     closing: "<|im_end|>\n",
-  })
-}).andSystems({
-  respondTo: generateTextResponse
+  }),
+  respondTo: generateTextResponse,
 }).build());
 
 botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
@@ -100,8 +95,7 @@ botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
   shortTermMemory: new ShortTermMemory({
     contextWindow: 4096,
   }),
-  promptConstructor: new MistralPromptConstructor()
-}).andSystems({
+  promptConstructor: new MistralPromptConstructor(),
   respondTo: generateTextResponse,
 }).build());
 
@@ -113,13 +107,10 @@ botStorage.put("Mistral", () => BuildHugBot("Mistral").fromComponents({
     temperature: 0.6,
     repetitionPenalty: 1.2,
   }),
-  //   AIClient: new AIClientMock,
   shortTermMemory: new ShortTermMemory({
     contextWindow: 32768,
-    // systemPrompt: "Always assist with care, respect, and truth. Respond with utmost utility yet securely. Avoid harmful, unethical, prejudiced, or negative content. Ensre replies promote fairness and positivity."
   }),
   promptConstructor: new MistralPromptConstructor(),
-}).andSystems({
   respondTo: generateTextResponse,
 }).build());
 
