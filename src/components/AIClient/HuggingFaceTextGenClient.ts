@@ -74,6 +74,7 @@ export class HuggingFaceTextGenClient {
   * @property {string} prompt - Formatted AI chat conversation string.
   * @property {string} apiToken - Optional API key. */
   public async sendRequest(prompt: string, apiToken?: string): Promise<string> {
+    console.log(apiToken);
     try {
       const payload = this.#makePayload(prompt, apiToken);
       const response = await fetch(this.endPoint + this.languageModel, payload);

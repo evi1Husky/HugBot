@@ -3,16 +3,18 @@ import { MistralPromptConstructor } from "../components/PromptConstructor/Mistra
 import { HuggingFaceTextGenClient } from "../components/AIClient/HuggingFaceTextGenClient";
 import { AIClientMock } from "../components/AIClient/AIClientMock";
 import { ShortTermMemory } from "../components/ShortTermMemory/ShortTermMemory";
+import { IObuffer } from "../components/IObuffer/IObuffer";
 import { BuildHugBot } from "../HugBotEntity/HugBotEntity";
 import { HugBotProxy } from "../HugBotEntity/AbstractSingletonProxyFactoryBean";
 import { BotStorage } from "./botStorage";
 import { generateTextResponse } from "../components/RespondTo/TextGen";
 import { mistralTokenizer } from "../components/Tokenizers/MistralTokenizer";
+import { SecretsHider } from "../components/SecretsHider/SecretsHider";
 
 export {
   BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer,
   HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
-  MistralPromptConstructor
+  MistralPromptConstructor, IObuffer, SecretsHider,
 }
 
 export const botStorage = BotStorage();
@@ -38,6 +40,8 @@ botStorage.put("StarChat", () => BuildHugBot("StarChat").fromComponents({
     closing: "<|im_end|>\n",
   }),
   respondTo: generateTextResponse,
+  IObuffer: new IObuffer(),
+  secretsHider: SecretsHider(),
 }).build());
 
 botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
@@ -60,6 +64,8 @@ botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
     closing: "</s>\n",
   }),
   respondTo: generateTextResponse,
+  IObuffer: new IObuffer(),
+  secretsHider: SecretsHider(),
 }).build());
 
 botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
@@ -82,6 +88,8 @@ botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
     closing: "<|im_end|>\n",
   }),
   respondTo: generateTextResponse,
+  IObuffer: new IObuffer(),
+  secretsHider: SecretsHider(),
 }).build());
 
 botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
@@ -97,6 +105,8 @@ botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
   }),
   promptConstructor: new MistralPromptConstructor(),
   respondTo: generateTextResponse,
+  IObuffer: new IObuffer(),
+  secretsHider: SecretsHider(),
 }).build());
 
 botStorage.put("Mistral", () => BuildHugBot("Mistral").fromComponents({
@@ -112,5 +122,7 @@ botStorage.put("Mistral", () => BuildHugBot("Mistral").fromComponents({
   }),
   promptConstructor: new MistralPromptConstructor(),
   respondTo: generateTextResponse,
+  IObuffer: new IObuffer(),
+  secretsHider: SecretsHider(),
 }).build());
 

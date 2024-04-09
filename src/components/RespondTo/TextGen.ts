@@ -1,4 +1,4 @@
-import { HugBotEntity } from "../HugBotEntity/HugBotEntity"
+import { HugBotEntity } from "../../HugBotEntity/HugBotEntity";
 
 function pushToShortTermMemory(HugBot: HugBotEntity, entry: MemoryEntry) {
   if (!HugBot.shortTermMemory)
@@ -40,6 +40,8 @@ export async function generateTextResponse(this: HugBotEntity,
   pushToShortTermMemory(this, { role: "user", input: userInput });
   const memoryState = memoryDump(this);
   const promptTemplate = buildPromptTemplate(this, userInput, memoryState);
+  const key = await this.secretsHider?.get();
+  apiToken = key!
   const response = await sendRequest(this, promptTemplate, apiToken);
   pushToShortTermMemory(this, { role: "ai", input: response });
   return response;

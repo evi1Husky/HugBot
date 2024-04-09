@@ -1,14 +1,8 @@
 import { HugBotEntity } from "../../HugBotEntity/HugBotEntity";
 
-type queueNode = {
-  prev?: queueNode;
-  msg?: string;
-}
-
 export class IObuffer {
-  #queue: queueNode = {};
+  #queue: string[] = [];
   #callStack: Map<string, (res: string) => void> = new Map();
-  #len = 0;
   #bot: HugBotEntity | null = null;
   #processing = false;
 
@@ -35,12 +29,19 @@ export class IObuffer {
   }
 
   async #process() {
-    while (this.#len) {
+    while (this.#queue.length) {
       if (this.#bot) {
         this.#processing = true;
-        const msg = this.#pop();
+        const msg = this.#queue.shift();
+        if (!msg) {
+          break;
+        }
         const res = await this.#bot.respondTo!(msg);
-        this.#callStack.forEach(cb => cb(res));
+        try {
+          this.#callStack.forEach(cb => cb(res));
+        } catch (what) {
+          console.error(what);
+        }
       } else {
         console.error("IOBuffer: Can't access HugBot instance.");
         break;
@@ -50,32 +51,10 @@ export class IObuffer {
   }
 
   public pushMessage(msg: string): void {
-    if (this.#len === 0) {
-      Object.assign(this.#queue, { msg });
-    } else {
-      const newNode: queueNode = { msg, prev: this.#queue };
-      Object.assign(this.#queue, newNode)
-    }
-    this.#len++;
+    this.#queue.push(msg);
     if (!this.#processing) {
       this.#processing = true;
       setTimeout(() => this.#process(), 0);
-    }
-  }
-
-  #pop(): string {
-    if (this.#queue.msg) {
-      const msg = this.#queue.msg;
-      const prevNode: queueNode | undefined = this.#queue.prev;
-      if (prevNode) {
-        Object.assign(this.#queue, prevNode)
-        this.#len--;
-      } else {
-        this.#len = 0;
-      }
-      return msg;
-    } else {
-      return "";
     }
   }
 }
