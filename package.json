@@ -1,7 +1,7 @@
 {
   "name": "hugbot",
   "version": "1.4.2",
-  "description": "Chatbot agent for HuggingFace Inference API text generation models and other AI providers.",
+  "description": "Chatbot maker for HuggingFace Inference API and other AI API providers and backends.",
   "main": "dist/botFactory/botFactory.js",
   "types": "dist/index.d.ts",
   "scripts": {},

@@ -1,5 +1,6 @@
 import { HugBot, HugBotEntity, HugBotParams } from "./HugBotEntity"
 import { setParams } from "./gettersAndSetters";
+import { availableParams } from "./availableParams";
 
 export const HugBotProxy = (bot: HugBotEntity): HugBot => {
   return Object.seal(new Proxy(bot, {
@@ -14,7 +15,15 @@ export const HugBotProxy = (bot: HugBotEntity): HugBot => {
         case "pushMessage":
           return (msg: string): void => bot.IObuffer?.pushMessage(msg);
         case "setParams":
-          return (params: Partial<HugBotParams>): void => setParams(params, bot);
+          return (params: Partial<HugBotParams>): void => {
+            for (const param in params) {
+              if (!availableParams.has(param)) {
+                console.error(`Can't set param: ${param}`);
+                return;
+              }
+            }
+            setParams(params, bot);
+          }
         case "id":
           return bot.id;
         case "apiToken":

@@ -1,7 +1,8 @@
 import { HugBotEntity } from "../../HugBotEntity/HugBotEntity";
+import { FCFSqueue } from "./FCFS_queue";
 
 export class IObuffer {
-  #queue: string[] = [];
+  #queue = new FCFSqueue<string>();
   #callStack: Map<string, (res: string) => void> = new Map();
   #bot: HugBotEntity | null = null;
   #processing = false;
@@ -29,25 +30,26 @@ export class IObuffer {
   }
 
   async #process() {
-    while (this.#queue.length) {
-      if (this.#bot) {
-        this.#processing = true;
-        const msg = this.#queue.shift();
-        if (!msg) {
-          break;
-        }
-        const res = await this.#bot.respondTo!(msg);
-        try {
+    this.#processing = true;
+    if (this.#queue.len <= 0) {
+      this.#processing = false;
+      return;
+    } else if (!this.#bot || !this.#bot.respondTo) {
+      console.error("IOBuffer: Can't access HugBot instance.");
+      this.#processing = false;
+      return;
+    } else {
+      try {
+        const msg = this.#queue.popLeft();
+        if (msg) {
+          const res = await this.#bot.respondTo(msg);
           this.#callStack.forEach(cb => cb(res));
-        } catch (what) {
-          console.error(what);
         }
-      } else {
-        console.error("IOBuffer: Can't access HugBot instance.");
-        break;
+      } catch (what) {
+        console.error(what);
       }
     }
-    this.#processing = false;
+    this.#process();
   }
 
   public pushMessage(msg: string): void {

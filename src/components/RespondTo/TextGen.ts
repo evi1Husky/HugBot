@@ -1,5 +1,17 @@
 import { HugBotEntity } from "../../HugBotEntity/HugBotEntity";
 
+type MemoryEntry = {
+  role: "user" | "ai";
+  input: string;
+}
+
+type MemoryDump = {
+  conversation: MemoryEntry[];
+  systemPrompt: string;
+  responseAffirmation: string;
+  userInstruction: string;
+}
+
 function pushToShortTermMemory(HugBot: HugBotEntity, entry: MemoryEntry) {
   if (!HugBot.shortTermMemory)
     return;
@@ -35,27 +47,31 @@ function sendRequest(HugBot: HugBotEntity, promptTemplate: string, apiToken?: st
   return HugBot.AIClient.sendRequest(promptTemplate, apiToken);
 }
 
-export async function generateTextResponse(this: HugBotEntity,
-  userInput: string, apiToken?: string): Promise<string> {
+async function maybeRetrieveApiToken(HugBot: HugBotEntity, apiToken?: string) {
+  if (apiToken) {
+    return apiToken;
+  } else if (HugBot.secretsHider) {
+    try {
+      const token = await HugBot.secretsHider.get();
+      if (token) {
+        return token;
+      }
+    } catch (what) {
+      console.error(what);
+      return undefined;
+    }
+  }
+  return undefined;
+}
+
+export async function generateTextResponse
+  (this: HugBotEntity, userInput: string, apiToken?: string) {
   pushToShortTermMemory(this, { role: "user", input: userInput });
   const memoryState = memoryDump(this);
   const promptTemplate = buildPromptTemplate(this, userInput, memoryState);
-  const key = await this.secretsHider?.get();
-  apiToken = key!
-  const response = await sendRequest(this, promptTemplate, apiToken);
+  const token = await maybeRetrieveApiToken(this, apiToken);
+  const response = await sendRequest(this, promptTemplate, token);
   pushToShortTermMemory(this, { role: "ai", input: response });
   return response;
-}
-
-type MemoryEntry = {
-  role: "user" | "ai";
-  input: string;
-}
-
-type MemoryDump = {
-  conversation: MemoryEntry[];
-  systemPrompt: string;
-  responseAffirmation: string;
-  userInstruction: string;
 }
 

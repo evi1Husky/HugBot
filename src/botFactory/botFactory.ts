@@ -10,11 +10,12 @@ import { BotStorage } from "./botStorage";
 import { generateTextResponse } from "../components/RespondTo/TextGen";
 import { mistralTokenizer } from "../components/Tokenizers/MistralTokenizer";
 import { SecretsHider } from "../components/SecretsHider/SecretsHider";
+import { FCFSqueue } from "../components/IObuffer/FCFS_queue";
 
 export {
   BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer,
   HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
-  MistralPromptConstructor, IObuffer, SecretsHider,
+  MistralPromptConstructor, IObuffer, FCFSqueue, SecretsHider,
 }
 
 export const botStorage = BotStorage();
