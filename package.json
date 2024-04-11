@@ -28,7 +28,8 @@
   "files": [
     "README.md",
     "dist",
-    "LICENSE"
+    "LICENSE",
+    "package.json"
   ],
   "type": "module",
   "dependencies": {
