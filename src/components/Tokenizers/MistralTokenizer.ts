@@ -1,3 +1,4 @@
+// @ts-ignore
 import { MistralTokenizer } from "mistral-tokenizer-ts"
 
 const mistralTokenCounter = new MistralTokenizer()

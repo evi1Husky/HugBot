@@ -68,13 +68,14 @@ zephyr.setParams({
 ## Build your own HugBot
 
 ```typescript
-// Import all required components and the builder function:
+// Import required components and the builder function:
 import {  
   BuildHugBot, generateTextResponse, HuggingFaceTextGenClient,
   ShortTermMemory, PromptConstructor, IObuffer, SecretsHider 
 } from "hugbot"
 
-// Use the builder function to construct and configure the bot:
+// Use the builder function to construct and configure the bot.
+// All components are optional.
 const zephyr = BuildHugBot("Zephyr").fromComponents({
   AIClient: new HuggingFaceTextGenClient({
     languageModel: "HuggingFaceH4/zephyr-7b-beta", // link to the language model from HF
@@ -108,25 +109,25 @@ zephyr.respondTo("Hi!").then((response) => console.log(response));
 Params available for setParams method:
 
 ```typescript
+// Type definition for HugBot parameters
 type HugBotParams = {
-  systemPrompt: string
+  systemPrompt: string; // System prompt used in the chatbot
   responseAffirmation: string // prepended befor every bot reply
   userInstruction: string // automatically add user instruction to every prompt
   contextWindow: number // chatbot conversation memory buffer size
-  topK: number | undefined
-  topP: number | undefined
-  temperature: number
-  repetitionPenalty: number | undefined
-  maxNewTokens: number | undefined
-  maxTime: number | undefined
-  returnFullText: boolean
-  numReturnSequences: number
-  doSample: boolean
-  truncate: number | undefined
-  //server options:
-  waitForModel: boolean
-  useCache: boolean
-}
+  topK: number | undefined;  // Top-K sampling parameter for LLMs
+  topP: number | undefined;  // Top-P sampling parameter for LLMs
+  temperature: number;  // Temperature parameter for LLMs
+  repetitionPenalty: number | undefined;  // Repetition penalty for LLMs
+  maxNewTokens: number | undefined;  // Maximum number of new tokens generated
+  maxTime: number | undefined;  // Maximum time allowed for generation
+  returnFullText: boolean;  // Flag to return full text responses
+  numReturnSequences: number;  // Number of return sequences
+  doSample: boolean;  // Flag to enable sampling
+  truncate: number | undefined;  // Truncate parameter for responses
+  waitForModel: boolean;  // Flag to wait for model availability
+  useCache: boolean;  // Flag to enable caching
+};
 ```
 
 ## Components

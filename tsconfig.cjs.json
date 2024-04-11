@@ -9,14 +9,14 @@
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "ES6",
-    "moduleResolution": "Bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "./dist/esm",
+    "outDir": "./dist/cjs/",
     "removeComments": false,
-    "declarationDir": "./dist/esm",
+    "declarationDir": "./dist/cjs/",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -34,12 +34,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "exclude": [
-    "node_modules",
+    "node_modules"
   ],
   "include": [
     "src/**/*.ts"
-  ],
+  ]
 }
