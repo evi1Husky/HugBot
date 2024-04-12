@@ -303,8 +303,8 @@ interface IObuffer {
 ```
 
 # generateTextResponse
-Main method for interacting with HugBot. Orchestrates all bot components to generate
-ai text response. Takes conversation prompt and optional api token and returns string promise.
+Main method for interacting with HugBot. Orchestrates all bot components to produce
+ai response. Takes user prompt and optional api token and returns string promise.
 
 ```typescript
 type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
@@ -323,8 +323,8 @@ interface SecretsHider {
 
 # BotStorage
 Bot storage container. Bot names mapped to their corresponding builder function definitions.
-The bot builder function is called and the bot is instiantiated when it's retrieved from
-storage usign get method.
+The bot builder function is called and the bot is instantiated when it's retrieved from
+storage using the get method.
 
 ```typescript
 type BotsInStorage = "StarChat" | "Zephyr" | "Hermes" | "Mixtral" | "Mistral";
