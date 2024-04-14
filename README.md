@@ -3,6 +3,7 @@
 Chatbot maker for HuggingFace 🤗 Inference API and other AI API providers and backends.
 
 ## Features
+
 - ✨ Free and Open Sauce.
 - 💬 Chatbot conversation memory buffer with token counting and truncation to fit the context window.
 - 🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
@@ -15,6 +16,7 @@ Chatbot maker for HuggingFace 🤗 Inference API and other AI API providers and 
 - 🔮 Support for different AI clients other than HuggingFace free API coming soon, maybe.
 
 ## Preconfigured chatbot models
+
 - Zephyr: huggingface.co/models/HuggingFaceH4/zephyr-7b-beta
 - Hermes: huggingface.co/models/NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO
 - Mixtral: huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1
@@ -22,11 +24,13 @@ Chatbot maker for HuggingFace 🤗 Inference API and other AI API providers and 
 - StarChat: huggingface.co/models/HuggingFaceH4/starchat2-15b-v0.1
 
 ## Install
+
 ```sh
 npm i hugbot
 ```
 
 ## Usage
+
 ```typescript
 // Import botStorage container:
 import { botStorage } from "hugbot"
@@ -65,7 +69,49 @@ zephyr.setParams({
 });
 ```
 
-## Build your own HugBot
+## Params
+
+Params available for setParams method:
+```typescript
+type HugBotParams = {
+  systemPrompt: string; // An instruction to AI added to the beginnig of the prompt string 
+  // example: "You are a helpful AI assistant."
+  responseAffirmation: string // Prepended to bot replies, can be used to coerce the bot into following 
+  // any instructions, exapmple: "Sure!", "Here you go:". Default is empty string.
+  userInstruction: string // Added after user query, can be used for RAG and additional instructions. 
+  // Default is empty string.
+  // These are only added to last conversation entries.
+  contextWindow: number // Chatbot conversation memory size in tokens (around 1.5 tokens per word). 
+  // Used to manage limitet LLM context window. When memory buffer overflows it's truncated 
+  // by removing oldest conversation entries.
+  topK: number | undefined;  // Top-K sampling. The range of candidate tokens to select from for the next prediction.
+  topP: number | undefined;  // Sampling based on probability threshold.
+  temperature: number;  // Parameter impacting the randomness of predictions by scaling the probabilities of alternatives.
+  repetitionPenalty: number | undefined;  // Penalizing repeated phrases or sentences by lowering their likelihood.
+  maxNewTokens: number | undefined;  // limits the amount of newly generated text per response.
+  maxTime: number | undefined;  // Maximum time allowed for generation.
+  doSample: boolean;  // Choosing between deterministic greedy decoding (false) and stochastic sampling (true).
+}
+```
+
+Example, basic default settings:
+```typescript
+bot.setParams({
+  systemPrompt: "You are a helpful AI assistant.",
+  userInstruction: "",
+  responseAffirmation: "",
+  contextWindow: 2048,
+  maxNewTokens: 500,
+  repetitionPenalty: 1.1,
+  doSample: true,
+  temperature: 0.7,
+  topK: 50,
+  topP: 0.95,
+  maxTime: 30
+});
+```
+
+# Build your own HugBot
 
 ```typescript
 // Import required components and the builder function:
@@ -105,30 +151,10 @@ const zephyr = BuildHugBot("Zephyr").fromComponents({
 zephyr.respondTo("Hi!").then((response) => console.log(response));
 ```
 
-## Params
-Params available for setParams method:
+# Components
 
-```typescript
-// Type definition for HugBot parameters
-type HugBotParams = {
-  systemPrompt: string; // "You are a helpful AI assistant."
-  responseAffirmation: string // Prepended to bot replies, can be used to coerce the bot into following 
-  // any instructions, exapmple: "Sure!", "Here you go:"
-  userInstruction: string // Added after user query, can be used for RAG and additional instructions.
-  contextWindow: number // chatbot conversation memory buffer size in tokens
-  topK: number | undefined;  // Top-K sampling parameter
-  topP: number | undefined;  // Top-P sampling parameter
-  temperature: number;  // Temperature parameter
-  repetitionPenalty: number | undefined;  // Repetition penalty
-  maxNewTokens: number | undefined;  // Maximum number of new tokens generated
-  maxTime: number | undefined;  // Maximum time allowed for generation
-  doSample: boolean;  // Flag to enable sampling
-};
-```
+## BuildHugBot
 
-## Components
-
-# BuildHugBot
 Chatbot builder function for constructing and configuring bots, 
 takes component instances and returns proxied HugBot entity.
 
@@ -164,7 +190,8 @@ All available HugBot components so far:
 }
 ```
 
-# ShortTermMemory 
+## ShortTermMemory
+
 Conversation memory buffer with tokenizer to count prompt tokens and truncate
 memory entries to fit the prompt inside limited LLM token window.
 
@@ -203,7 +230,8 @@ interface ShortTermMemory {
 }
 ```
 
-# PromptConstructor
+## PromptConstructor
+
 Used for prompt templating, takes an object describing 
 ai prompt tags and current short term memory state dump:
 
@@ -238,7 +266,8 @@ interface PromptConstructor {
 }
 ```
 
-# MistralPromptConstructor
+## MistralPromptConstructor
+
 Dedicated Mistral prompt formatter because Mistrals have weird prompt format.
 
 Returns prompt string that looks like this:
@@ -246,7 +275,8 @@ Returns prompt string that looks like this:
 "<s>[INST] {system_prompt}\n Hello, how are you? [/INST] I'm doing great. How can I help you today?</s> [INST] I'd like to show off how chat templating works! [/INST]"
 ```
 
-# HuggingFaceTextGenClient 
+## HuggingFaceTextGenClient
+
 http client for HuggingFace Inference api.
 You can find detailed description for all HuggingFace API params here:
 https://huggingface.co/docs/api-inference/detailed_parameters
@@ -283,14 +313,18 @@ interface AIClient {
 }
 ```
  
-#  AIClientMock
+## AIClientMock
+
 Fake AI client for testing purposes, returns random responses with random delays.
 
-# IObuffer
+## IObuffer
+
 This is used to implement event driven API with message queue.
 The message queue is processed asynchronously by the bot. You can assign
-multiple even listeners to handle bot responses using onResponse method.
-Use pushMessage to add messages to the queue.
+multiple event listeners to handle bot responses using onResponse method.
+Use pushMessage to add messages to the queue. IObuffer uses rate limiter,
+you can set minimum delay between respondTo calls with rateLimit property
+in constructor.
 
 ```typescript
 interface IObuffer {
@@ -301,7 +335,8 @@ interface IObuffer {
 }
 ```
 
-# generateTextResponse
+## generateTextResponse
+
 Main method for interacting with HugBot. Runs all bot components to produce
 ai response. Takes user prompt and optional api token and returns string promise.
 
@@ -309,7 +344,8 @@ ai response. Takes user prompt and optional api token and returns string promise
 type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
 ```
 
-# SecretsHider
+## SecretsHider
+
 Used to encrypt and obfuscate provided api key in memory during runtime.
 
 ```typescript
@@ -320,7 +356,8 @@ interface SecretsHider {
 }
 ```
 
-# BotStorage
+## BotStorage
+
 Bot storage container. Bot names mapped to their corresponding builder functions.
 The bot builder function is called and the bot is instantiated when it's retrieved from
 storage using the get method.
@@ -337,7 +374,7 @@ const BotStorage: () => {
 }
 ```
 
-## License
+# License
 
 This project is licensed under the MIT License.
 

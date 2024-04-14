@@ -54,7 +54,7 @@ botStorage.put("StarChat", () => BuildHugBot("StarChat").fromComponents({
 botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
   AIClient: new HuggingFaceTextGenClient({
     languageModel: "HuggingFaceH4/zephyr-7b-beta",
-    maxNewTokens: 256,
+    maxNewTokens: 500,
     doSample: true,
     temperature: 0.7,
     topK: 50,

@@ -52,20 +52,34 @@ export interface HugBot {
    * */
   pushMessage: (msg: string) => void;
   /**
-   * Set available HugBot params.
-   * @Object {params} - Bot configuration object.
-   * @property {string} systemPrompt - "You are a helpful AI assistant.".
-   * @property {string} responseAffirmation - Prepended to bot replies, can be used to coerce the bot into following any instructions, exapmple: "Sure!", "Here you go:"
-   * @property {string} userInstruction - Added after user query, can be used for RAG and additional instructions.
-   * @property {number} contextWindow - Conversation memory buffer size in tokens.
-   * @property {number} topK - Top-K sampling parameter.
-   * @property {number} topP - Top-P sampling parameter.
-   * @property {number} temperature - Temperature parameter.
-   * @property {number} repetitionPenalty - Repetition penalty.
-   * @property {number} maxNewTokens - Maximum number of new tokens generated.
-   * @property {number} maxTime - Maximum time allowed for generation.
-   * @property {boolean} doSample - Flag to enable sampling.
-   * */
+   * Set HugBot params.
+   * @Object params - Bot configuration object.
+   * @param systemPrompt - An instruction to AI added to the beginnig of the prompt string example: "You are a helpful AI assistant.".
+   * @param responseAffirmation - Prepended to bot replies, can be used to coerce the bot into following any instructions, exapmple: "Sure!", "Here you go:"
+   * @param userInstruction - Added after user query, can be used for RAG and additional instructions.
+   * @param contextWindow - Chatbot conversation memory size in tokens (around 1.5 tokens per word). Used to manage limitet LLM context window. When memory buffer overflows it's truncated 
+   * @param topK - Top-K sampling. The range of candidate tokens to select from for the next prediction.
+   * @param topP - Sampling based on probability threshold
+   * @param temperature - Parameter impacting the randomness of predictions by scaling the probabilities of alternatives.
+   * @param repetitionPenalty - Penalizing repeated phrases or sentences by lowering their likelihood.
+   * @param maxNewTokens - limits the amount of newly generated text per response.
+   * @param maxTime - Maximum time allowed for generation.
+   * @param doSample - Choosing between deterministic greedy decoding (false) and stochastic sampling (true). 
+   * @example
+   * ```typescript
+   *  bot.setParams({
+   *    systemPrompt: "You are a helpful AI assistant.",
+   *    contextWindow: 2048,
+   *    maxNewTokens: 500,
+   *    repetitionPenalty: 1.1,
+   *    doSample: true,
+   *    temperature: 0.7,
+   *    topK: 50,
+   *    topP: 0.95,
+   *    maxTime: 30
+   *  });
+   * ```
+   */
   setParams: (params: Partial<HugBotParams>) => void;
 }
 
