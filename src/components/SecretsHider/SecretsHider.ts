@@ -13,6 +13,9 @@ enum Res {
   Failure = "Failure",
 }
 
+/**
+ * Used to encrypt and obfuscate provided api token in memory during runtime.
+ */
 export const SecretsHider = (): Readonly<SecretsHider> => {
   const Store = (secret: string, key: string): Readonly<Store> => {
     const store = ((secret: string, key: string) => {

@@ -2,6 +2,10 @@ import { HugBot } from "../HugBotEntity/HugBotEntity";
 
 type BotsInStorage = "StarChat" | "Zephyr" | "Hermes" | "Mixtral" | "Mistral";
 
+/**
+ * Bot storage container. Maps bot id's to their builder functions.
+ * The bot is instantiated during retieval with get() method.
+ */
 export const BotStorage = () => {
   const store: Map<string, () => HugBot> = new Map();
 

@@ -1,5 +1,8 @@
 import { HugBotProxy } from "./AbstractSingletonProxyFactoryBean";
 
+/**
+ * Bot builder function. Takes component instances and returns proxied HugBot entity.
+ */
 export const BuildHugBot = (id: string) => {
   const bot: HugBotEntity = Object.create(null);
 
@@ -14,8 +17,9 @@ export const BuildHugBot = (id: string) => {
   }
 
   const build = (): HugBot => {
-    if (bot.IObuffer)
+    if (bot.IObuffer) {
       bot.IObuffer.setBot = bot;
+    }
     return HugBotProxy(bot);
   }
 
@@ -32,13 +36,13 @@ export interface HugBot {
   apiToken: (key: string | null) => Promise<Res>;
   /** 
    * Takes user prompt and optional api token and generates AI response.
-   * @param userInput - string - user prompt striing.
+   * @param userInput - string - user prompt string.
    * @param apiToken - string - optional api token to be sent to ai provider along with the prompt.
    * @returns Promise<string>
    * */
   respondTo: (userInput: string, apiToken?: string) => Promise<string>;
   /**
-   * Takes even listener callbacks to be called when bot processes messages in the queue.
+   * Takes event listener callbacks to be called when bot processes messages in the queue.
    * @param (res: string) => void
    */
   onResponse: (...cb: Array<(res: string) => void>) => void;
@@ -50,22 +54,17 @@ export interface HugBot {
   /**
    * Set available HugBot params.
    * @Object {params} - Bot configuration object.
-   * @property {string} systemPrompt - System prompt used in the chatbot.
-   * @property {string} responseAffirmation - Affirmation prepended to bot responses.
-   * @property {string} userInstruction - Instruction added after user queries.
-   * @property {number} contextWindow - Conversation memory buffer size.
-   * @property {number} topK - Top-K sampling parameter for LLMs.
-   * @property {number} topP - Top-P sampling parameter for LLMs.
-   * @property {number} temperature - Temperature parameter for LLMs.
-   * @property {number} repetitionPenalty - Repetition penalty for LLMs.
+   * @property {string} systemPrompt - "You are a helpful AI assistant.".
+   * @property {string} responseAffirmation - Prepended to bot replies, can be used to coerce the bot into following any instructions, exapmple: "Sure!", "Here you go:"
+   * @property {string} userInstruction - Added after user query, can be used for RAG and additional instructions.
+   * @property {number} contextWindow - Conversation memory buffer size in tokens.
+   * @property {number} topK - Top-K sampling parameter.
+   * @property {number} topP - Top-P sampling parameter.
+   * @property {number} temperature - Temperature parameter.
+   * @property {number} repetitionPenalty - Repetition penalty.
    * @property {number} maxNewTokens - Maximum number of new tokens generated.
    * @property {number} maxTime - Maximum time allowed for generation.
-   * @property {boolean} returnFullText - Flag to return full text responses.
-   * @property {number} numReturnSequences - Number of return sequences.
    * @property {boolean} doSample - Flag to enable sampling.
-   * @property {number} truncate - Truncate parameter for responses.
-   * @property {boolean} waitForModel - Flag to wait for model availability.
-   * @property {boolean} useCache - Flag to enable caching.
    * */
   setParams: (params: Partial<HugBotParams>) => void;
 }
@@ -100,37 +99,32 @@ export type HugBotParams = {
   repetitionPenalty: number | undefined;
   maxNewTokens: number | undefined;
   maxTime: number | undefined;
-  returnFullText: boolean;
-  numReturnSequences: number;
   doSample: boolean;
-  truncate: number | undefined;
-  waitForModel: boolean;
-  useCache: boolean;
 }
 
-type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
+export type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
 
-interface AIClient {
+export interface AIClient {
   sendRequest: (prompt: string, apiToken?: string) => Promise<string>;
 }
 
-interface PromptConstructor {
+export interface PromptConstructor {
   getPromptTemplate: (memoryDump: MemoryDump) => string;
 }
 
-interface ShortTermMemory {
+export interface ShortTermMemory {
   push: (entry: MemoryEntry) => void;
   get dump(): MemoryDump;
 }
 
-interface IObuffer {
+export interface IObuffer {
   pushMessage: (msg: string) => void;
   onResponse: (...cb: Array<(res: string) => void>) => void;
   removeEventListener: (name: string | "all") => void;
   set setBot(bot: HugBotEntity);
 }
 
-interface SecretsHider {
+export interface SecretsHider {
   set: (secret: string) => Promise<Res>;
   get: () => Promise<string | null | Res>;
   destroy: () => void;

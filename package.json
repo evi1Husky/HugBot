@@ -1,11 +1,11 @@
 {
   "name": "hugbot",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Chatbot maker for HuggingFace Inference API and other AI API providers and backends.",
   "main": "dist/esm/botFactory/botFactory.js",
   "types": "dist/esm/botFactory/botFactory.d.ts",
   "scripts": {
-    "compile": "tsc && tsc -p ./tsconfig.cjs.json"
+    "compile": "npx tsc && npx tsc -p ./tsconfig.cjs.json"
   },
   "keywords": [
     "LLM",

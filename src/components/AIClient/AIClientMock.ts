@@ -1,6 +1,8 @@
+import { AIClient } from "../../HugBotEntity/HugBotEntity";
+
 /** Mock AI client for testing purposes.
  * @param {number} maxDelay - maximum delay between responses */
-export class AIClientMock {
+export class AIClientMock implements AIClient {
   #BOT_REPLIES = [
     "Will do!",
     "Sure thing.",

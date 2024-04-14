@@ -28,7 +28,6 @@ export class FCFSqueue<T> {
   }
 
   public popLeft(): T | null {
-    console.log(this.#queue)
     if (this.#len === 0) {
       return null;
     } else {

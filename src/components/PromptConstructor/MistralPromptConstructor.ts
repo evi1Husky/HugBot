@@ -1,10 +1,12 @@
+import { PromptConstructor } from "../../HugBotEntity/HugBotEntity";
+
 /**
  * Dedicated prompt formatter for Mistral models, because Mistrals have weird prompt format.
  * Produces this output:
  * @example
  * "<s>[INST] {system_prompt}\n Hello, how are you? [/INST] I'm doing great. How can I help you today?</s> [INST] I'd like to show off how chat templating works! [/INST]"
  */
-export class MistralPromptConstructor {
+export class MistralPromptConstructor implements PromptConstructor {
   public getPromptTemplate(memoryDump: MemoryDump): string {
     const conv: MemoryEntry[] = JSON.parse(JSON.stringify(memoryDump.conversation));
     if (conv[0].role === "ai")

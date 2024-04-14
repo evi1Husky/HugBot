@@ -3,7 +3,7 @@
 Chatbot maker for HuggingFace 🤗 Inference API and other AI API providers and backends.
 
 ## Features
-- ✨ Free and Open Source.
+- ✨ Free and Open Sauce.
 - 💬 Chatbot conversation memory buffer with token counting and truncation to fit the context window.
 - 🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
 - 🧩 Proper LLM prompt templating using tags and examples provided in model docs and tokenizer configs.
@@ -111,22 +111,18 @@ Params available for setParams method:
 ```typescript
 // Type definition for HugBot parameters
 type HugBotParams = {
-  systemPrompt: string; // System prompt used in the chatbot
-  responseAffirmation: string // prepended befor every bot reply
-  userInstruction: string // automatically add user instruction to every prompt
-  contextWindow: number // chatbot conversation memory buffer size
-  topK: number | undefined;  // Top-K sampling parameter for LLMs
-  topP: number | undefined;  // Top-P sampling parameter for LLMs
-  temperature: number;  // Temperature parameter for LLMs
-  repetitionPenalty: number | undefined;  // Repetition penalty for LLMs
+  systemPrompt: string; // "You are a helpful AI assistant."
+  responseAffirmation: string // Prepended to bot replies, can be used to coerce the bot into following 
+  // any instructions, exapmple: "Sure!", "Here you go:"
+  userInstruction: string // Added after user query, can be used for RAG and additional instructions.
+  contextWindow: number // chatbot conversation memory buffer size in tokens
+  topK: number | undefined;  // Top-K sampling parameter
+  topP: number | undefined;  // Top-P sampling parameter
+  temperature: number;  // Temperature parameter
+  repetitionPenalty: number | undefined;  // Repetition penalty
   maxNewTokens: number | undefined;  // Maximum number of new tokens generated
   maxTime: number | undefined;  // Maximum time allowed for generation
-  returnFullText: boolean;  // Flag to return full text responses
-  numReturnSequences: number;  // Number of return sequences
   doSample: boolean;  // Flag to enable sampling
-  truncate: number | undefined;  // Truncate parameter for responses
-  waitForModel: boolean;  // Flag to wait for model availability
-  useCache: boolean;  // Flag to enable caching
 };
 ```
 
@@ -155,7 +151,7 @@ interface HugBot {
 }
 ```
 
-All available HugBot components:
+All available HugBot components so far:
 ```typescript
  type HugBotEntity = {
   id: string;
@@ -258,10 +254,12 @@ https://huggingface.co/docs/api-inference/detailed_parameters
 Available props:
 ```typescript
 type HuggingFaceTextGenParams = {
-  endPoint: string; // link to HuggingFace Inference api end point
-  // "https://api-inference.huggingface.co/models/"
-  languageModel: string; // link to the language model, defined in constructor.
+  endPoint: string; // link to HuggingFace api end point: "https://api-inference.huggingface.co/models/"
+  languageModel: string; // link to the language model, assigned in constructor.
   // example: "HuggingFaceH4/zephyr-7b-beta"
+  // full api link example used to fetch ai responses: 
+  // "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+  // LLM hyperparameters:
   topK: number | undefined;
   topP: number | undefined;
   temperature: number;
@@ -272,6 +270,7 @@ type HuggingFaceTextGenParams = {
   numReturnSequences: number;
   doSample: boolean;
   truncate: number | undefined;
+  // Server options:
   waitForModel: boolean;
   useCache: boolean;
 }
@@ -303,7 +302,7 @@ interface IObuffer {
 ```
 
 # generateTextResponse
-Main method for interacting with HugBot. Orchestrates all bot components to produce
+Main method for interacting with HugBot. Runs all bot components to produce
 ai response. Takes user prompt and optional api token and returns string promise.
 
 ```typescript
@@ -322,7 +321,7 @@ interface SecretsHider {
 ```
 
 # BotStorage
-Bot storage container. Bot names mapped to their corresponding builder function definitions.
+Bot storage container. Bot names mapped to their corresponding builder functions.
 The bot builder function is called and the bot is instantiated when it's retrieved from
 storage using the get method.
 

@@ -8,11 +8,6 @@ export const availableParams = new Set([
   "repetitionPenalty",
   "maxNewTokens",
   "maxTime",
-  "returnFullText",
-  "numReturnSequences",
   "doSample",
-  "truncate",
-  "waitForModel",
-  "useCache",
 ]);
 

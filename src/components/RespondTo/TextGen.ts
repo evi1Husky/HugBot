@@ -64,6 +64,10 @@ async function maybeRetrieveApiToken(HugBot: HugBotEntity, apiToken?: string) {
   return undefined;
 }
 
+/**
+ * Main HugBot interaction method. Uses components present on the bot instance 
+ * to produce text response.
+ */
 export async function generateTextResponse
   (this: HugBotEntity, userInput: string, apiToken?: string) {
   pushToShortTermMemory(this, { role: "user", input: userInput });

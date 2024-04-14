@@ -10,14 +10,20 @@ import { BotStorage } from "./botStorage";
 import { generateTextResponse } from "../components/RespondTo/TextGen";
 import { mistralTokenizer } from "../components/Tokenizers/MistralTokenizer";
 import { SecretsHider } from "../components/SecretsHider/SecretsHider";
+import { RateLimiter } from "../HugBotEntity/RateLimiter";
 import { FCFSqueue } from "../components/IObuffer/FCFS_queue";
 
 export {
   BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer,
   HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
-  MistralPromptConstructor, IObuffer, FCFSqueue, SecretsHider,
+  MistralPromptConstructor, IObuffer, FCFSqueue, SecretsHider, RateLimiter
 }
 
+/**
+ * Bot storage container. Maps bot id's to their builder functions.
+ * The bot is instantiated during retieval with get() method.
+ * Bots in storage: "StarChat", "Zephyr", "Hermes", "Mixtral", "Mistral"
+ */
 export const botStorage = BotStorage();
 
 botStorage.put("StarChat", () => BuildHugBot("StarChat").fromComponents({

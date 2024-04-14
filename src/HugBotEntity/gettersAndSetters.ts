@@ -1,3 +1,6 @@
+/**
+ * Traverses bot components to set provided params if their names and types match existing properties.
+ */
 export const setParams
   = <T>(params: Record<string, T>, obj: Record<string, any>) => {
     Object.entries(obj).forEach(([key, value]) => {
@@ -24,11 +27,11 @@ const objectFromEntries = <T>(entries: [string, T][]): Record<string, T> =>
 
 export const filterDisallowedParams =
   <T>(params: Record<string, T>, disallowedParams: Set<string>) => {
-  const allowedParams = Object.entries(params).filter(x => !disallowedParams.has(x[0]));
-  return objectFromEntries(allowedParams);
-}
+    const allowedParams = Object.entries(params).filter(x => !disallowedParams.has(x[0]));
+    return objectFromEntries(allowedParams);
+  }
 
-export const areAllowedParams = <T>(params: Record<string, T>, allowedParams: Set<string>) => 
-  Object.keys(params).every((param) => allowedParams.has(param)) 
+export const areAllowedParams = <T>(params: Record<string, T>, allowedParams: Set<string>) =>
+  Object.keys(params).every((param) => allowedParams.has(param))
 
 
