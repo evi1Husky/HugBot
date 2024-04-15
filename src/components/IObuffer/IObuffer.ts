@@ -50,7 +50,7 @@ export class IObuffer {
       try {
         const msg = this.#queue.popLeft();
         if (msg) {
-          const res = await this.#bot.respondTo(msg);
+          const res = await this.#bot.respondTo(this.#bot, msg);
           this.#callStack.forEach(cb => cb(res));
         }
       } catch (what) {

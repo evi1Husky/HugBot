@@ -1,6 +1,6 @@
 {
   "name": "hugbot",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Chatbot maker for HuggingFace Inference API and other AI API providers and backends.",
   "main": "dist/esm/botFactory/botFactory.js",
   "types": "dist/esm/botFactory/botFactory.d.ts",

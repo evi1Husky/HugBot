@@ -117,7 +117,8 @@ bot.setParams({
 // Import required components and the builder function:
 import {  
   BuildHugBot, generateTextResponse, HuggingFaceTextGenClient,
-  ShortTermMemory, PromptConstructor, IObuffer, SecretsHider 
+  ShortTermMemory, PromptConstructor, IObuffer, SecretsHider,
+  RateLimiter
 } from "hugbot"
 
 // Use the builder function to construct and configure the bot.
@@ -146,12 +147,33 @@ const zephyr = BuildHugBot("Zephyr").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(1000)
 }).build();
 
 zephyr.respondTo("Hi!").then((response) => console.log(response));
 ```
 
 # Components
+
+All available HugBot components so far:
+```typescript
+ type HugBotEntity = {
+  id: string;
+  AIClient?: AIClient;
+  shortTermMemory?: ShortTermMemory;
+  promptConstructor?: PromptConstructor;
+  respondTo?: GenerateResponse;
+  IObuffer?: IObuffer;
+  secretsHider?: SecretsHider;
+  rateLimiter?: RateLimiter;
+}
+
+export {
+  generateTextResponse, BuildHugBot, HugBotProxy,  BotStorage, mistralTokenizer,
+  SecretsHider, HuggingFaceTextGenClient, AIClientMock, ShortTermMemory,
+  PromptConstructor, MistralPromptConstructor, IObuffer, FCFSqueue, RateLimiter,
+}
+```
 
 ## BuildHugBot
 
@@ -177,17 +199,14 @@ interface HugBot {
 }
 ```
 
-All available HugBot components so far:
+
+## generateTextResponse
+
+Main method for interacting with HugBot. Runs all bot components to produce
+ai response. Takes user prompt and optional api token and returns string promise.
+
 ```typescript
- type HugBotEntity = {
-  id: string;
-  AIClient?: AIClient;
-  shortTermMemory?: ShortTermMemory;
-  promptConstructor?: PromptConstructor;
-  respondTo?: GenerateResponse;
-  IObuffer?: IObuffer;
-  secretsHider?: SecretsHider;
-}
+type GenerateResponse = (HugBot: HugBotEntity, userInput: string, apiToken?: string) => Promise<string>;
 ```
 
 ## ShortTermMemory
@@ -335,13 +354,13 @@ interface IObuffer {
 }
 ```
 
-## generateTextResponse
+## HugBotProxy
 
-Main method for interacting with HugBot. Runs all bot components to produce
-ai response. Takes user prompt and optional api token and returns string promise.
+Proxy layer for input validation, handling access and setters. Wraps HugBot entity instance before
+returning it from the builder function with .build() method.
 
 ```typescript
-type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
+const HugBotProxy: (bot: HugBotEntity) => HugBotEntity
 ```
 
 ## SecretsHider
@@ -353,6 +372,17 @@ interface SecretsHider {
   set: (secret: string) => Promise<Res>;
   get: () => Promise<string | null | Res>;
   destroy: () => void;
+}
+```
+
+## RateLimiter
+
+Built in rate limiter module to prevent API abuse. Throws if spam is detected.
+Constructor takes minimum delay betwen requests in milliseconds.
+
+```typescript
+interface RateLimiter {
+  check: () => void | never;
 }
 ```
 

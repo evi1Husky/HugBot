@@ -1,53 +1,47 @@
 import { HugBotEntity } from "../../HugBotEntity/HugBotEntity";
+import { MemoryEntry, MemoryDump } from "../../HugBotEntity/HugBotEntity";
 
-type MemoryEntry = {
-  role: "user" | "ai";
-  input: string;
+const maybePushToShortTermMemory = (HugBot: HugBotEntity, entry: MemoryEntry): void => {
+  if (HugBot.shortTermMemory) {
+    HugBot.shortTermMemory.push(entry);
+  }
 }
 
-type MemoryDump = {
-  conversation: MemoryEntry[];
-  systemPrompt: string;
-  responseAffirmation: string;
-  userInstruction: string;
-}
-
-function pushToShortTermMemory(HugBot: HugBotEntity, entry: MemoryEntry) {
-  if (!HugBot.shortTermMemory)
+const maybeUseMemoryDump = (HugBot: HugBotEntity): MemoryDump | undefined => {
+  if (!HugBot.shortTermMemory) {
     return;
-  HugBot.shortTermMemory.push(entry);
+  } else {
+    return HugBot.shortTermMemory.dump;
+  }
 }
 
-function memoryDump(HugBot: HugBotEntity) {
-  if (!HugBot.shortTermMemory)
-    return;
-  return HugBot.shortTermMemory.dump;
-}
+const fallBackPromptTemplate = (entries: MemoryEntry[]): string =>
+  entries.reduce((acc, x) => acc + `<${x.role}>\n${x.input}\n`, "") + "<ai>\n";
 
-function fallBackPromptTemplate(entries: MemoryEntry[]) {
-  return entries.reduce((acc, x) => acc + `<${x.role}>\n${x.input}\n`, "") + "<ai>\n";
-}
-
-function buildPromptTemplate(HugBot: HugBotEntity, userInput: string, memoryEntries?: MemoryDump) {
-  if (memoryEntries && HugBot.promptConstructor)
+const buildPromptTemplate = (HugBot: HugBotEntity, userInput: string, memoryEntries?: MemoryDump) => {
+  if (memoryEntries && HugBot.promptConstructor) {
     return HugBot.promptConstructor.getPromptTemplate(memoryEntries);
-  if (!memoryEntries && !HugBot.promptConstructor)
+  } else if (!memoryEntries && !HugBot.promptConstructor) {
     return `<user>\n${userInput}\n<ai>\n`;
-  if (!memoryEntries && HugBot.promptConstructor)
+  } else if (!memoryEntries && HugBot.promptConstructor) {
     return HugBot.promptConstructor.getPromptTemplate({
       conversation: [{ role: "user", input: userInput }],
       systemPrompt: "", responseAffirmation: "", userInstruction: ""
     });
-  return fallBackPromptTemplate(memoryEntries!.conversation);
+  } else {
+    return fallBackPromptTemplate(memoryEntries!.conversation);
+  }
 }
 
-function sendRequest(HugBot: HugBotEntity, promptTemplate: string, apiToken?: string) {
-  if (!HugBot.AIClient)
+const sendRequest = (HugBot: HugBotEntity, promptTemplate: string, apiToken?: string) => {
+  if (!HugBot.AIClient) {
     return "No response...";
-  return HugBot.AIClient.sendRequest(promptTemplate, apiToken);
+  } else {
+    return HugBot.AIClient.sendRequest(promptTemplate, apiToken);
+  }
 }
 
-async function maybeRetrieveApiToken(HugBot: HugBotEntity, apiToken?: string) {
+const maybeRetrieveApiToken = async (HugBot: HugBotEntity, apiToken?: string) => {
   if (apiToken) {
     return apiToken;
   } else if (HugBot.secretsHider) {
@@ -64,18 +58,26 @@ async function maybeRetrieveApiToken(HugBot: HugBotEntity, apiToken?: string) {
   return undefined;
 }
 
+const maybeUseRateLimiter = (HugBot: HugBotEntity): void | never => {
+  if (HugBot.rateLimiter) {
+    HugBot.rateLimiter.check();
+  }
+}
+
 /**
  * Main HugBot interaction method. Uses components present on the bot instance 
  * to produce text response.
  */
-export async function generateTextResponse
-  (this: HugBotEntity, userInput: string, apiToken?: string) {
-  pushToShortTermMemory(this, { role: "user", input: userInput });
-  const memoryState = memoryDump(this);
-  const promptTemplate = buildPromptTemplate(this, userInput, memoryState);
-  const token = await maybeRetrieveApiToken(this, apiToken);
-  const response = await sendRequest(this, promptTemplate, token);
-  pushToShortTermMemory(this, { role: "ai", input: response });
+const generateTextResponse = async (HugBot: HugBotEntity, userInput: string, apiToken?: string) => {
+  maybeUseRateLimiter(HugBot);
+  maybePushToShortTermMemory(HugBot, { role: "user", input: userInput });
+  const memoryState = maybeUseMemoryDump(HugBot);
+  const promptTemplate = buildPromptTemplate(HugBot, userInput, memoryState);
+  const token = await maybeRetrieveApiToken(HugBot, apiToken);
+  const response = await sendRequest(HugBot, promptTemplate, token);
+  maybePushToShortTermMemory(HugBot, { role: "ai", input: response });
   return response;
 }
+
+export { generateTextResponse }
 

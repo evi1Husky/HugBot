@@ -10,13 +10,13 @@ import { BotStorage } from "./botStorage";
 import { generateTextResponse } from "../components/RespondTo/TextGen";
 import { mistralTokenizer } from "../components/Tokenizers/MistralTokenizer";
 import { SecretsHider } from "../components/SecretsHider/SecretsHider";
-import { RateLimiter } from "../HugBotEntity/RateLimiter";
 import { FCFSqueue } from "../components/IObuffer/FCFS_queue";
+import { RateLimiter } from "../components/RateLimiter/RateLimiter";
 
 export {
   BuildHugBot, HugBotProxy, generateTextResponse, BotStorage, mistralTokenizer,
-  HuggingFaceTextGenClient, AIClientMock, ShortTermMemory, PromptConstructor,
-  MistralPromptConstructor, IObuffer, FCFSqueue, SecretsHider, RateLimiter
+  SecretsHider, HuggingFaceTextGenClient, AIClientMock, ShortTermMemory,
+  PromptConstructor, MistralPromptConstructor, IObuffer, FCFSqueue, RateLimiter,
 }
 
 /**
@@ -49,6 +49,7 @@ botStorage.put("StarChat", () => BuildHugBot("StarChat").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(2000),
 }).build());
 
 botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
@@ -73,6 +74,7 @@ botStorage.put("Zephyr", () => BuildHugBot("Zephyr").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(2000),
 }).build());
 
 botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
@@ -97,6 +99,7 @@ botStorage.put("Hermes", () => BuildHugBot("Hermes").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(2000),
 }).build());
 
 botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
@@ -114,6 +117,7 @@ botStorage.put("Mixtral", () => BuildHugBot("Mixtral").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(2000),
 }).build());
 
 botStorage.put("Mistral", () => BuildHugBot("Mistral").fromComponents({
@@ -131,5 +135,6 @@ botStorage.put("Mistral", () => BuildHugBot("Mistral").fromComponents({
   respondTo: generateTextResponse,
   IObuffer: new IObuffer(),
   secretsHider: SecretsHider(),
+  rateLimiter: new RateLimiter(2000),
 }).build());
 

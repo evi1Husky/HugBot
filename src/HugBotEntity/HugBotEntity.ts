@@ -20,7 +20,7 @@ export const BuildHugBot = (id: string) => {
     if (bot.IObuffer) {
       bot.IObuffer.setBot = bot;
     }
-    return HugBotProxy(bot);
+    return HugBotProxy(bot) as unknown as HugBot;
   }
 
   return { fromComponents }
@@ -91,15 +91,17 @@ export type HugBotEntity = {
   respondTo?: GenerateResponse;
   IObuffer?: IObuffer;
   secretsHider?: SecretsHider;
+  rateLimiter?: RateLimiter;
 }
 
-type HugBotComponents = {
+export type HugBotComponents = {
   AIClient: AIClient;
   shortTermMemory: ShortTermMemory;
   promptConstructor: PromptConstructor;
   respondTo: GenerateResponse;
   IObuffer: IObuffer;
   secretsHider: SecretsHider;
+  rateLimiter: RateLimiter;
 }
 
 export type HugBotParams = {
@@ -116,7 +118,8 @@ export type HugBotParams = {
   doSample: boolean;
 }
 
-export type GenerateResponse = (userInput: string, apiToken?: string) => Promise<string>;
+export type GenerateResponse =
+  (HugBot: HugBotEntity, userInput: string, apiToken?: string) => Promise<string>;
 
 export interface AIClient {
   sendRequest: (prompt: string, apiToken?: string) => Promise<string>;
@@ -144,17 +147,21 @@ export interface SecretsHider {
   destroy: () => void;
 }
 
-enum Res {
+export interface RateLimiter {
+  check: () => void | never;
+}
+
+export enum Res {
   Success = "Success",
   Failure = "Failure",
 }
 
-type MemoryEntry = {
+export type MemoryEntry = {
   role: "user" | "ai";
   input: string;
 }
 
-type MemoryDump = {
+export type MemoryDump = {
   conversation: MemoryEntry[];
   systemPrompt: string;
   responseAffirmation: string;
