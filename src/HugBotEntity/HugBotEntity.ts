@@ -54,10 +54,10 @@ export interface HugBot {
   /**
    * Set HugBot params.
    * @Object params - Bot configuration object.
-   * @param systemPrompt - An instruction to AI added to the beginnig of the prompt string example: "You are a helpful AI assistant.".
-   * @param responseAffirmation - Prepended to bot replies, can be used to coerce the bot into following any instructions, exapmple: "Sure!", "Here you go:"
+   * @param systemPrompt - An instruction to AI added to the beginig of the prompt string example: "You are a helpful AI assistant.".
+   * @param responseAffirmation - Prepended to bot replies, can be used to coerce the bot into following any instructions, example: "Sure!", "Here you go:"
    * @param userInstruction - Added after user query, can be used for RAG and additional instructions.
-   * @param contextWindow - Chatbot conversation memory size in tokens (around 1.5 tokens per word). Used to manage limitet LLM context window. When memory buffer overflows it's truncated 
+   * @param contextWindow - Chatbot conversation memory size in tokens (around 1.5 tokens per word). Used to manage limited LLM context window. When memory buffer overflows it's truncated 
    * @param topK - Top-K sampling. The range of candidate tokens to select from for the next prediction.
    * @param topP - Sampling based on probability threshold
    * @param temperature - Parameter impacting the randomness of predictions by scaling the probabilities of alternatives.

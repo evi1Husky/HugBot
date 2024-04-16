@@ -31,7 +31,6 @@
     "LICENSE",
     "package.json"
   ],
-  "type": "module",
   "dependencies": {
     "mistral-tokenizer-ts": "^1.2.0"
   },

@@ -1,5 +1,8 @@
 import { HugBotEntity, HugBotParams } from "./HugBotEntity"
 
+/**
+ * Stringly typed bot params for runtime type-checking when using setParams setter.
+ */
 const availableParams = new Set([
   "systemPrompt",
   "responseAffirmation",

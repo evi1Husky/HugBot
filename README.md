@@ -5,15 +5,15 @@ Chatbot maker for HuggingFace 🤗 Inference API and other AI API providers and 
 ## Features
 
 - ✨ Free and Open Sauce.
-- 💬 Chatbot conversation memory buffer with token counting and truncation to fit the context window.
-- 🛠️ Fully customizeble including system prompt, LLM hyperparameters, prompt tags etc.
+- 💬 Conversation memory buffer with token counting and truncation to fit the chatbot context window.
+- 🛠️ Fully customizable including system prompt, LLM hyperparameters, prompt tags etc.
 - 🧩 Proper LLM prompt templating using tags and examples provided in model docs and tokenizer configs.
 - 🤖 Preconfigured chatbot models.
-- ⭐️ Works in browsers, Deno and Bun, probably in node too.
+- ⭐️ Works in browsers, Node and Bun.
 - ⚡️ Event driven API with message queue for non-blocking interactions with your bots.
-- 🔥 Modular architecture.
+- 🔥 Modular and extensibe architecture.
 - 📘 All the Typescript typings.
-- 🔮 Support for different AI clients other than HuggingFace free API coming soon, maybe.
+- 🔮 Integration with different AI api providers other than HuggingFace free API coming soon, maybe.
 
 ## Preconfigured chatbot models
 
@@ -69,20 +69,39 @@ zephyr.setParams({
 });
 ```
 
+## Use HugBot in Node.js
+
+```typescript
+const hugbot = require('hugbot');
+
+const botStorage = hugbot.botStorage;
+
+const zephyr = botStorage.get("Zephy");
+
+async function chat() {
+  const query = prompt(">");
+  const res = await zephyr.respondTo(query, "your api token here");
+  console.log("\n", res, "\n");
+  chat();
+}
+
+chat();
+```
+
 ## Params
 
 Params available for setParams method:
 ```typescript
 type HugBotParams = {
-  systemPrompt: string; // An instruction to AI added to the beginnig of the prompt string 
+  systemPrompt: string; // An instruction to AI added to the beginig of the prompt string 
   // example: "You are a helpful AI assistant."
   responseAffirmation: string // Prepended to bot replies, can be used to coerce the bot into following 
-  // any instructions, exapmple: "Sure!", "Here you go:". Default is empty string.
+  // any instructions, example: "Sure!", "Here you go:". Default is empty string.
   userInstruction: string // Added after user query, can be used for RAG and additional instructions. 
   // Default is empty string.
   // These are only added to last conversation entries.
   contextWindow: number // Chatbot conversation memory size in tokens (around 1.5 tokens per word). 
-  // Used to manage limitet LLM context window. When memory buffer overflows it's truncated 
+  // Used to manage limited LLM context window. When memory buffer overflows it's truncated 
   // by removing oldest conversation entries.
   topK: number | undefined;  // Top-K sampling. The range of candidate tokens to select from for the next prediction.
   topP: number | undefined;  // Sampling based on probability threshold.
@@ -203,7 +222,7 @@ interface HugBot {
 ## generateTextResponse
 
 Main method for interacting with HugBot. Runs all bot components to produce
-ai response. Takes user prompt and optional api token and returns string promise.
+ai response. Takes HugBot instance, user prompt and optional api token and returns string promise.
 
 ```typescript
 type GenerateResponse = (HugBot: HugBotEntity, userInput: string, apiToken?: string) => Promise<string>;
@@ -238,7 +257,7 @@ You can set the following memory state properties:
 - contextWindow - Memory buffer length in tokens;
 - systemPrompt - "You are a helpful AI assistant.";
 - responseAffirmation - Prepended to bot replies, can be used to coerce the bot into
-  following any instructions, exapmple: "Sure!", "Here you go:"
+  following any instructions, example: "Sure!", "Here you go:"
 - userInstruction - added after user query, can be used for RAG and additional instructions.
 
 Short term memory interface: 
